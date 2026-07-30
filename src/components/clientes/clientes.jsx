@@ -1,6 +1,6 @@
 // Clientes.jsx - VERSIÓN ACTUALIZADA
 import React, { useState, useEffect } from "react";
-import "./Clientes.css";
+import "./clientes.css";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 

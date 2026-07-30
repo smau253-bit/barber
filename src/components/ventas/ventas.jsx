@@ -1,6 +1,6 @@
 // Ventas.jsx - VERSIÓN CON BACKEND
 import React, { useState, useEffect } from "react";
-import "./Ventas.css";
+import "./ventas.css";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 
