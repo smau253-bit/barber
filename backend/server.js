@@ -8,8 +8,56 @@ const app = express(); // ← ESTO ES LO QUE TE FALTA
 const PORT = process.env.PORT || 5000;
 
 // === MIDDLEWARE ===
-app.use(cors());
-app.use(express.json({ limit: '10mb' })); // Permite imágenes grandes en Base64
+// === MIDDLEWARE ===
+
+// ✅ CONFIGURACIÓN CORS COMPLETA PARA MÓVILES Y ESCRITORIO
+const corsOptions = {
+  origin: [
+    'https://barber-2-j9bc.onrender.com',
+    'https://barber.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://*.vercel.app',
+    'https://*.onrender.com',
+    // Permite cualquier origen en desarrollo
+    '*'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'Access-Control-Allow-Origin',
+    'Access-Control-Allow-Headers',
+    'Access-Control-Allow-Methods'
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+// Aplicar CORS con la configuración
+app.use(cors(corsOptions));
+
+// ✅ Manejar preflight OPTIONS explícitamente
+app.options('*', cors(corsOptions));
+
+// ✅ Middleware adicional para CORS (fallback)
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+// Body parser (debe ir DESPUÉS de CORS)
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 
 
