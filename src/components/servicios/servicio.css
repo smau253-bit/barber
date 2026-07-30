@@ -1,0 +1,482 @@
+@import "tailwindcss";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: #1e103f;
+  color: #fff;
+}
+
+/* ==========================
+   HEADER - Estilo como productos
+========================== */
+.servicios-header {
+  width: 100%;
+  background: #161616;
+  border-bottom: 1px solid #2b2b2b;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.servicios-logo h2 {
+  color: #fff;
+  font-size: 28px;
+  letter-spacing: 2px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.servicios-logo span {
+  color: #caa84c;
+  font-size: 11px;
+  letter-spacing: 4px;
+}
+
+/* Menú de navegación */
+.servicios-menu {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+.servicios-menu a {
+  text-decoration: none;
+  color: #c7c7c7;
+  transition: 0.3s;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.servicios-menu a:hover,
+.servicios-menu .servicios-activo {
+  color: #caa84c;
+}
+
+/* Acciones del header */
+.servicios-opciones {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.servicios-input {
+  width: 200px;
+  height: 42px;
+  border: none;
+  outline: none;
+  background: #222;
+  color: white;
+  padding: 0 15px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.servicios-input::placeholder {
+  color: #888;
+}
+
+.servicios-salir {
+  height: 42px;
+  padding: 0 20px;
+  background: #caa84c;
+  color: black;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+
+.servicios-salir:hover {
+  background: #ddb95b;
+  transform: scale(1.02);
+}
+
+/* ==========================
+   CONTENIDO PRINCIPAL
+========================== */
+.servicios-principal {
+  width: 90%;
+  max-width: 1250px;
+  margin: 40px auto;
+  padding: 0 10px;
+}
+
+.servicios-principal h1 {
+  font-size: 38px;
+  margin-bottom: 5px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.servicios-total {
+  color: #9d9d9d;
+  margin-bottom: 25px;
+  font-size: 15px;
+}
+
+.servicios-separador {
+  margin: 30px 0 25px 0;
+  position: relative;
+  text-align: center;
+}
+
+.servicios-separador span {
+  background: #0d0d0d;
+  padding: 0 20px;
+  font-size: 14px;
+  color: #caa84c;
+  letter-spacing: 2px;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+
+.servicios-separador::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #2b2b2b;
+}
+
+/* ==========================
+   GRID DE SERVICIOS
+========================== */
+.servicios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.servicio-card {
+  background: #171717;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #2e2e2e;
+  transition: 0.35s;
+  display: flex;
+  flex-direction: column;
+}
+
+.servicio-card:hover {
+  transform: translateY(-6px);
+  border-color: #caa84c;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.servicio-imagen {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.servicio-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 20px;
+}
+
+.servicio-precio {
+  color: #caa84c;
+  font-size: 28px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.servicio-nombre {
+  font-size: 17px;
+  color: white;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.servicio-texto {
+  flex: 1;
+  color: #c8c8c8;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  text-align: justify;
+  overflow-wrap: break-word;
+}
+
+.servicio-boton {
+  width: 100%;
+  height: 48px;
+  background: transparent;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+  font-size: 14px;
+  letter-spacing: 1px;
+  margin-top: auto;
+}
+
+.servicio-boton:hover {
+  background: #caa84c;
+  color: black;
+  border-color: #caa84c;
+  transform: scale(1.02);
+}
+
+
+
+/* ==========================
+   ANIMACIÓN SUAVE
+========================== */
+.servicio-card {
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+}
+
+.servicio-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.servicio-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.servicio-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.servicio-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.servicio-card:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.servicio-card:nth-child(6) {
+  animation-delay: 0.6s;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================
+   RESPONSIVE - TABLETS
+========================== */
+@media (max-width: 1024px) {
+  .servicios-header {
+    padding: 15px 25px;
+  }
+
+  .servicios-input {
+    width: 160px;
+  }
+
+  .servicios-principal h1 {
+    font-size: 32px;
+  }
+
+  .servicios-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+}
+
+/* ==========================
+   RESPONSIVE - MÓVILES
+========================== */
+@media (max-width: 768px) {
+  .servicios-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 15px 20px;
+    gap: 12px;
+  }
+
+  .servicios-logo {
+    text-align: center;
+  }
+
+  .servicios-logo h2 {
+    font-size: 24px;
+  }
+
+  .servicios-logo span {
+    font-size: 10px;
+  }
+
+  .servicios-menu {
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .servicios-menu a {
+    font-size: 14px;
+    padding: 6px 0;
+  }
+
+  .servicios-opciones {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .servicios-input {
+    width: 100%;
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .servicios-salir {
+    width: 100%;
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .servicios-principal {
+    width: 95%;
+    margin: 25px auto;
+  }
+
+  .servicios-principal h1 {
+    font-size: 28px;
+    text-align: center;
+  }
+
+  .servicios-total {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .servicios-separador {
+    margin: 20px 0;
+  }
+
+  .servicios-separador span {
+    font-size: 12px;
+    padding: 0 15px;
+  }
+
+  .servicios-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .servicio-imagen {
+    height: 180px;
+  }
+
+  .servicio-info {
+    padding: 16px;
+  }
+
+  .servicio-precio {
+    font-size: 26px;
+  }
+
+  .servicio-nombre {
+    font-size: 16px;
+  }
+
+  .servicio-texto {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .servicio-boton {
+    height: 44px;
+    font-size: 13px;
+  }
+}
+
+/* ==========================
+   RESPONSIVE - MÓVILES PEQUEÑOS
+========================== */
+@media (max-width: 400px) {
+  .servicios-header {
+    padding: 12px 15px;
+  }
+
+  .servicios-logo h2 {
+    font-size: 20px;
+  }
+
+  .servicios-logo span {
+    font-size: 9px;
+    letter-spacing: 3px;
+  }
+
+  .servicios-menu {
+    gap: 15px;
+  }
+
+  .servicios-menu a {
+    font-size: 12px;
+  }
+
+  .servicios-principal h1 {
+    font-size: 22px;
+  }
+
+  .servicio-precio {
+    font-size: 22px;
+  }
+
+  .servicio-nombre {
+    font-size: 14px;
+  }
+
+  .servicio-texto {
+    font-size: 12px;
+  }
+
+  .servicio-boton {
+    height: 40px;
+    font-size: 12px;
+  }
+
+  .servicio-imagen {
+    height: 150px;
+  }
+}
+
+/* ==========================
+   MEJORAS DE ACCESIBILIDAD
+========================== */
+@media (max-width: 768px) {
+  .servicios-menu a,
+  .servicio-boton,
+  .servicios-salir {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .servicio-boton {
+    min-height: 48px;
+  }
+}

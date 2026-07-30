@@ -1,0 +1,198 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:#fcfafa;
+}
+
+.login{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#0d0d0d;
+}
+
+.login-card{
+
+    width:420px;
+    background:#171717;
+    border:1px solid #303030;
+    padding:45px 40px;
+}
+
+.logo{
+
+    text-align:center;
+    margin-bottom:35px;
+}
+
+.icono{
+
+    font-size:45px;
+    margin-bottom:15px;
+}
+
+.logo h1{
+
+    color:white;
+    letter-spacing:3px;
+    font-size:38px;
+    font-weight:800;
+}
+
+.logo span{
+    color:#d5b04c;
+}
+
+.logo p{
+
+    color:#d5b04c;
+    margin-top:10px;
+    letter-spacing:4px;
+    font-size:13px;
+}
+
+.separador{
+
+    display:flex;
+    align-items:center;
+    margin:35px 0;
+}
+
+.separador::before,
+.separador::after{
+
+    content:"";
+    flex:1;
+    height:1px;
+    background:#343434;
+}
+
+.separador span{
+
+    color:#d5b04c;
+    margin:0 15px;
+}
+
+form{
+
+    display:flex;
+    flex-direction:column;
+}
+
+label{
+
+    color:#8f8f8f;
+    margin-bottom:10px;
+    margin-top:18px;
+    font-size:13px;
+    letter-spacing:2px;
+    font-weight:600;
+}
+
+input{
+
+    width:100%;
+    padding:15px;
+    background:#1d1d1d;
+    border:1px solid #343434;
+    color:white;
+    outline:none;
+    font-size:15px;
+}
+
+input::placeholder{
+
+    color:#7f7f7f;
+}
+
+.password{
+
+    position:relative;
+}
+
+.password button{
+
+    position:absolute;
+    top:50%;
+    right:15px;
+    transform:translateY(-50%);
+    background:none;
+    border:none;
+    color:#888;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.btn-login{
+
+    margin-top:28px;
+    background:#d5b04c;
+    color:black;
+    border:none;
+    padding:17px;
+    font-size:18px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.3s;
+    letter-spacing:1px;
+}
+
+.btn-login:hover{
+
+    background:#e8c765;
+}
+
+.demo{
+
+    margin-top:28px;
+    padding:16px;
+    background:#1b1b1b;
+    border:1px solid #3a3120;
+    color:#868686;
+    font-size:14px;
+}
+
+.demo strong{
+
+    color:#d5b04c;
+}
+
+@media(max-width:500px){
+
+.login-card{
+
+    width:92%;
+    padding:30px 25px;
+}
+
+.logo h1{
+
+    font-size:30px;
+}
+}
+
+/* Agrega estos estilos a tu CSS existente */
+
+.error-mensaje {
+  background: #2a1a1a;
+  color: #e74c3c;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-align: center;
+  border: 1px solid #e74c3c;
+  margin-bottom: 10px;
+}
+
+.btn-login:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Mantén el resto de tus estilos originales */

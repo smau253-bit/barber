@@ -1,0 +1,458 @@
+@import "tailwindcss";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: #0d0d0d;
+  color: #fff;
+}
+
+/* ==========================
+   HERO - FONDO Y OVERLAY
+========================== */
+.inicio-hero {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-image: url("/img/fondo.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+}
+
+.inicio-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
+
+/* ==========================
+   HEADER - Estilo consistente
+========================== */
+.inicio-header {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  background: rgba(22, 22, 22, 0.95);
+  border-bottom: 1px solid rgba(43, 43, 43, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.inicio-logo h2 {
+  color: #fff;
+  font-size: 28px;
+  letter-spacing: 2px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.inicio-logo span {
+  color: #caa84c;
+  font-size: 11px;
+  letter-spacing: 4px;
+}
+
+/* Menú de navegación */
+.inicio-menu {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+.inicio-menu a {
+  text-decoration: none;
+  color: #c7c7c7;
+  transition: 0.3s;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.inicio-menu a:hover {
+  color: #caa84c;
+}
+
+/* Opciones del header */
+.inicio-opciones {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.inicio-login,
+.inicio-registro {
+  height: 42px;
+  padding: 0 20px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.inicio-login {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.inicio-login:hover {
+  background: white;
+  color: black;
+  transform: scale(1.02);
+}
+
+.inicio-registro {
+  background: #caa84c;
+  color: black;
+  border: none;
+}
+
+.inicio-registro:hover {
+  background: #ddb95b;
+  transform: scale(1.02);
+}
+
+/* ==========================
+   CONTENIDO PRINCIPAL
+========================== */
+.inicio-contenido {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  padding: 40px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px);
+}
+
+.inicio-subtitulo {
+  color: #caa84c;
+  letter-spacing: 4px;
+  font-size: 11px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.inicio-contenido h1 {
+  color: white;
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+
+.inicio-contenido h1 span {
+  color: #caa84c;
+  display: inline-block;
+}
+
+.inicio-descripcion {
+  color: #d2d2d2;
+  font-size: 16px;
+  line-height: 1.8;
+  max-width: 650px;
+  margin-bottom: 35px;
+  padding: 0 10px;
+}
+
+/* ==========================
+   ACCIONES (BOTONES)
+========================== */
+.inicio-acciones {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+.inicio-acciones a {
+  text-decoration: none;
+  flex: 1;
+  min-width: 200px;
+}
+
+.inicio-servicios,
+.inicio-crear {
+  width: 100%;
+  height: 50px;
+  padding: 0 25px;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 6px;
+}
+
+.inicio-servicios {
+  background: #caa84c;
+  color: black;
+  border: none;
+}
+
+.inicio-servicios:hover {
+  background: #ddb95b;
+  transform: scale(1.02);
+}
+
+.inicio-crear {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.inicio-crear:hover {
+  background: white;
+  color: black;
+  transform: scale(1.02);
+}
+
+/* ==========================
+   RESPONSIVE - TABLETS
+========================== */
+@media (max-width: 1024px) {
+  .inicio-header {
+    padding: 15px 25px;
+  }
+
+  .inicio-contenido h1 {
+    font-size: 40px;
+  }
+
+  .inicio-descripcion {
+    font-size: 15px;
+    max-width: 550px;
+  }
+
+  .inicio-acciones a {
+    min-width: 180px;
+  }
+}
+
+/* ==========================
+   RESPONSIVE - MÓVILES
+========================== */
+@media (max-width: 768px) {
+  .inicio-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 15px 20px;
+    gap: 12px;
+    background: rgba(22, 22, 22, 0.98);
+  }
+
+  .inicio-logo {
+    text-align: center;
+  }
+
+  .inicio-logo h2 {
+    font-size: 24px;
+  }
+
+  .inicio-logo span {
+    font-size: 10px;
+  }
+
+  .inicio-menu {
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .inicio-menu a {
+    font-size: 14px;
+    padding: 6px 0;
+  }
+
+  .inicio-opciones {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .inicio-login,
+  .inicio-registro {
+    width: 100%;
+    height: 40px;
+    font-size: 14px;
+    max-width: none;
+  }
+
+  .inicio-contenido {
+    padding: 30px 15px;
+    min-height: calc(100vh - 180px);
+  }
+
+  .inicio-subtitulo {
+    font-size: 10px;
+    letter-spacing: 3px;
+  }
+
+  .inicio-contenido h1 {
+    font-size: 32px;
+  }
+
+  .inicio-descripcion {
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 0 5px;
+  }
+
+  .inicio-descripcion br {
+    display: none;
+  }
+
+  .inicio-acciones {
+    flex-direction: column;
+    gap: 12px;
+    max-width: 320px;
+  }
+
+  .inicio-acciones a {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .inicio-servicios,
+  .inicio-crear {
+    height: 46px;
+    font-size: 13px;
+  }
+
+  /* Mejora de contraste en móvil */
+  .inicio-overlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* ==========================
+   RESPONSIVE - MÓVILES PEQUEÑOS
+========================== */
+@media (max-width: 400px) {
+  .inicio-header {
+    padding: 12px 15px;
+    gap: 10px;
+  }
+
+  .inicio-logo h2 {
+    font-size: 20px;
+    letter-spacing: 2px;
+  }
+
+  .inicio-logo span {
+    font-size: 9px;
+    letter-spacing: 3px;
+  }
+
+  .inicio-menu {
+    gap: 15px;
+  }
+
+  .inicio-menu a {
+    font-size: 12px;
+  }
+
+  .inicio-login,
+  .inicio-registro {
+    font-size: 12px;
+    height: 38px;
+  }
+
+  .inicio-contenido {
+    padding: 20px 12px;
+    min-height: calc(100vh - 150px);
+  }
+
+  .inicio-contenido h1 {
+    font-size: 26px;
+  }
+
+  .inicio-subtitulo {
+    font-size: 9px;
+    letter-spacing: 2px;
+  }
+
+  .inicio-descripcion {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .inicio-servicios,
+  .inicio-crear {
+    height: 42px;
+    font-size: 12px;
+    padding: 0 15px;
+  }
+
+  .inicio-acciones {
+    max-width: 280px;
+  }
+}
+
+/* ==========================
+   MEJORAS DE ACCESIBILIDAD
+========================== */
+@media (max-width: 768px) {
+  .inicio-menu a,
+  .inicio-servicios,
+  .inicio-crear,
+  .inicio-login,
+  .inicio-registro {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ==========================
+   SOPORTE PARA NOTCH Y SAFE AREA
+========================== */
+@supports (padding: max(0px)) {
+  .inicio-hero {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+}
+
+/* ==========================
+   ANIMACIÓN SUAVE
+========================== */
+.inicio-contenido {
+  animation: fadeInUp 0.8s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

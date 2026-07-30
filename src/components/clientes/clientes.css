@@ -1,0 +1,785 @@
+/* Clientes.css */
+@import "tailwindcss";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #e9e6e6;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ==========================
+   LAYOUT PRINCIPAL
+========================== */
+.clientes-container {
+  display: flex;
+  min-height: 100vh;
+  background: #0d0d0d;
+  color: #fff;
+}
+
+/* ==========================
+   SIDEBAR
+========================== */
+.sidebar {
+  width: 260px;
+  background: #141414;
+  padding: 30px 20px;
+  border-right: 1px solid #2a2a2a;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.brand h1 {
+  color: #caa84c;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.brand .subtitle {
+  display: block;
+  color: #888;
+  font-size: 0.6rem;
+  letter-spacing: 5px;
+  margin-top: -4px;
+  border-bottom: 1px solid #2a2a2a;
+  padding-bottom: 20px;
+}
+
+.nav-menu {
+  margin-top: 28px;
+  flex: 1;
+}
+
+.nav-menu h3 {
+  color: #666;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.nav-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-menu li {
+  padding: 12px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #bbb;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.nav-menu li:hover {
+  background: #1e1e1e;
+  color: #fff;
+}
+
+.nav-menu li.active {
+  background: #caa84c;
+  color: #000;
+  font-weight: 700;
+}
+
+.session-info {
+  border-top: 1px solid #2a2a2a;
+  padding-top: 20px;
+}
+
+.session-title {
+  color: #666;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.user {
+  color: #ddd;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid #444;
+  color: #ccc;
+  padding: 10px 0;
+  width: 100%;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: #2a1a1a;
+  border-color: #caa84c;
+  color: #caa84c;
+}
+
+/* ==========================
+   MAIN CONTENT
+========================== */
+.main-content {
+  flex: 1;
+  padding: 30px 40px;
+  background: #0d0d0d;
+  overflow-y: auto;
+}
+
+/* ==========================
+   HEADER
+========================== */
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #2a2a2a;
+  padding-bottom: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.top-header h2 {
+  color: #caa84c;
+  font-size: 32px;
+  letter-spacing: 2px;
+  font-weight: 900;
+}
+
+.btn-nuevo {
+  background: #caa84c;
+  color: #000;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-nuevo:hover {
+  background: #ddb95b;
+}
+
+/* ==========================
+   FORMULARIO
+========================== */
+.formulario-card {
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 28px;
+}
+
+.formulario-card h3 {
+  color: #fff;
+  font-size: 18px;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  color: #aaa;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.form-group input {
+  padding: 12px 14px;
+  background: #0d0d0d;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #eee;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #caa84c;
+}
+
+.form-group input:disabled {
+  color: #888;
+  background: #1a1a1a;
+  cursor: not-allowed;
+}
+
+.id-disabled {
+  color: #888;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+  justify-content: flex-end;
+}
+
+.btn-guardar {
+  background: #caa84c;
+  color: #000;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-guardar:hover {
+  background: #ddb95b;
+}
+
+.btn-eliminar {
+  background: #2a1a1a;
+  color: #e74c3c;
+  border: 1px solid #e74c3c;
+  padding: 12px 32px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-eliminar:hover {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.btn-cancelar {
+  background: transparent;
+  color: #888;
+  border: 1px solid #444;
+  padding: 12px 32px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancelar:hover {
+  background: #2a2a2a;
+  color: #fff;
+}
+
+/* ==========================
+   BUSCADOR
+========================== */
+.buscador-card {
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 28px;
+}
+
+.buscador-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.buscador-container label {
+  color: #aaa;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.buscador-inputs {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+}
+
+.buscador-inputs input {
+  flex: 1;
+  padding: 10px 14px;
+  background: #0d0d0d;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #eee;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.buscador-inputs input:focus {
+  border-color: #caa84c;
+}
+
+.btn-buscar {
+  background: #caa84c;
+  color: #000;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-buscar:hover {
+  background: #ddb95b;
+}
+
+.btn-actualizar {
+  background: transparent;
+  color: #888;
+  border: 1px solid #444;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-actualizar:hover {
+  background: #2a2a2a;
+  color: #fff;
+}
+
+/* ==========================
+   LISTA DE CLIENTES
+========================== */
+.lista-section {
+  margin-top: 28px;
+}
+
+.lista-section h3 {
+  color: #fff;
+  font-size: 20px;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.clientes-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #141414;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.clientes-table thead {
+  background: #1a1a1a;
+}
+
+.clientes-table th {
+  text-align: left;
+  color: #888;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  padding: 16px 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.clientes-table td {
+  padding: 14px 20px;
+  font-size: 14px;
+}
+
+.clientes-table tbody tr {
+  border-bottom: 1px solid #222;
+  transition: background 0.2s;
+}
+
+.clientes-table tbody tr:hover {
+  background: #1a1a1a;
+}
+
+.clientes-table .text-center {
+  text-align: center;
+  color: #888;
+  padding: 32px 0;
+}
+
+/* ==========================
+   ACCIONES
+========================== */
+.acciones {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-edit {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.btn-edit:hover {
+  background: #2a2a2a;
+}
+
+.btn-delete {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.btn-delete:hover {
+  background: #2a1a1a;
+}
+
+/* ==========================
+   FOOTER
+========================== */
+.welcome-footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #2a2a2a;
+  color: #666;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #caa84c;
+  color: #000;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+/* ==========================
+   RESPONSIVE - TABLETS
+========================== */
+@media (max-width: 1024px) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sidebar {
+    width: 220px;
+    padding: 25px 15px;
+  }
+
+  .main-content {
+    padding: 25px 30px;
+  }
+
+  .top-header h2 {
+    font-size: 28px;
+  }
+}
+
+/* ==========================
+   RESPONSIVE - MÓVILES
+========================== */
+@media (max-width: 768px) {
+  .clientes-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    height: auto;
+    position: relative;
+    padding: 20px;
+  }
+
+  .main-content {
+    padding: 20px;
+  }
+
+  .top-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .top-header h2 {
+    font-size: 24px;
+  }
+
+  .btn-nuevo {
+    width: 100%;
+    text-align: center;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+  .buscador-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .buscador-inputs {
+    flex-direction: column;
+  }
+
+  .buscador-inputs button {
+    width: 100%;
+  }
+
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .clientes-table th,
+  .clientes-table td {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .acciones {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .brand h1 {
+    font-size: 24px;
+  }
+
+  .nav-menu li {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .welcome-footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .formulario-card h3 {
+    font-size: 16px;
+  }
+
+  .lista-section h3 {
+    font-size: 18px;
+  }
+}
+
+/* ==========================
+   RESPONSIVE - MÓVILES PEQUEÑOS
+========================== */
+@media (max-width: 400px) {
+  .sidebar {
+    padding: 16px;
+  }
+
+  .main-content {
+    padding: 12px;
+  }
+
+  .top-header h2 {
+    font-size: 20px;
+  }
+
+  .btn-nuevo {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .formulario-card {
+    padding: 16px;
+  }
+
+  .form-group input {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .btn-guardar,
+  .btn-eliminar,
+  .btn-cancelar {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .buscador-card {
+    padding: 12px;
+  }
+
+  .buscador-inputs input {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .btn-buscar,
+  .btn-actualizar {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .clientes-table th,
+  .clientes-table td {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .brand h1 {
+    font-size: 20px;
+  }
+
+  .brand .subtitle {
+    font-size: 0.5rem;
+    letter-spacing: 3px;
+  }
+
+  .nav-menu li {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .user {
+    font-size: 12px;
+  }
+
+  .logout-btn {
+    font-size: 12px;
+    padding: 8px 0;
+  }
+
+  .welcome-footer {
+    font-size: 12px;
+  }
+
+  .avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+}
+
+/* ==========================
+   MEJORAS DE ACCESIBILIDAD
+========================== */
+@media (max-width: 768px) {
+  .nav-menu li,
+  .btn-nuevo,
+  .btn-guardar,
+  .btn-eliminar,
+  .btn-cancelar,
+  .btn-buscar,
+  .btn-actualizar,
+  .logout-btn,
+  .btn-edit,
+  .btn-delete {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ==========================
+   SOPORTE PARA NOTCH Y SAFE AREA
+========================== */
+@supports (padding: max(0px)) {
+  .sidebar {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+
+  .main-content {
+    padding-left: max(30px, env(safe-area-inset-left));
+    padding-right: max(30px, env(safe-area-inset-right));
+  }
+}
+
+/* ==========================
+   ANIMACIONES
+========================== */
+.formulario-card {
+  animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.clientes-table tbody tr {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
