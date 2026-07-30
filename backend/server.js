@@ -5,7 +5,7 @@ const conexion = require("./db");
 
 // === CREAR LA APLICACIÓN ===
 const app = express(); // ← ESTO ES LO QUE TE FALTA
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // === MIDDLEWARE ===
 app.use(cors());
