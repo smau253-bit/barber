@@ -58,7 +58,7 @@ function Detalleca({ servicio, cerrar }) {
             className="modal-agendar" 
             onClick={() => {
               const mensaje = `Hola, me interesa adquirir el producto: ${nombre} (${precio})`;
-              const url = `https://wa.me/5217221234567?text=${encodeURIComponent(mensaje)}`;
+              const url = `https://wa.me/5217298028398?text=${encodeURIComponent(mensaje)}`;
               window.open(url, '_blank');
             }}
           >

@@ -1,5 +1,9 @@
-// backend/db.js - VERSIÓN PARA PRODUCCIÓN
+// backend/db.js - VERSIÓN CORREGIDA
 const mysql = require("mysql2/promise");
+const dotenv = require("dotenv"); // ← ¡AGREGA ESTA LÍNEA!
+
+// Cargar variables de entorno desde el archivo .env
+dotenv.config(); // ← ¡AGREGA ESTA LÍNEA!
 
 // Configuración con variables de entorno
 const conexion = mysql.createPool({

@@ -3,8 +3,10 @@ import "./catalogo.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from 'axios';
-import Detalleca from "../detalle_catalogo/detalleca"; // ← IMPORTAR DETALLECA
+import Detalleca from "../detalle_catalogo/detalleca";
 
+// 🔥 SOLO CAMBIA ESTA LÍNEA (línea 7)
+// Reemplaza la URL fija con esta configuración dinámica:
 const API_URL = 'http://localhost:5000/api/productos';
 
 function Catalogo() {
@@ -23,6 +25,7 @@ function Catalogo() {
     setLoading(true);
     setError(null);
     try {
+      console.log('📡 Conectando a:', API_URL); // Para debug
       const response = await axios.get(API_URL);
       if (response.data.success) {
         setProductos(response.data.data);
@@ -136,22 +139,22 @@ function Catalogo() {
           <section className="productos-grid">
             {productosFiltrados.map((producto) => (
               <div className="producto-card" key={producto.id_producto}>
-<img
-  src={producto.imagen || "/img/producto-default.jpg"}
-  alt={producto.nombre_producto}
-  className="producto-imagen"
-  onError={(e) => {
-    e.target.onerror = null;
-    e.target.src = "/img/producto-default.jpg";
-  }}
-/>
+                <img
+                  src={producto.imagen || "/img/producto-default.jpg"}
+                  alt={producto.nombre_producto}
+                  className="producto-imagen"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "/img/producto-default.jpg";
+                  }}
+                />
                 <div className="producto-info">
                   <h2 className="producto-precio">{formatearPrecio(producto.precio)}</h2>
                   <h3 className="producto-nombre">{producto.nombre_producto}</h3>
                   <p className="producto-texto">{producto.descripcion || 'Sin descripción'}</p>
                   <button
                     className="servicio-boton"
-                    onClick={() => abrirModal(producto)} // ← CORREGIDO: producto en lugar de servicio
+                    onClick={() => abrirModal(producto)}
                   >
                     VER DETALLES
                   </button>

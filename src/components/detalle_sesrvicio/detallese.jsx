@@ -49,7 +49,7 @@ const Detallese = ({ servicio, cerrar }) => {
             className="modal-agendar" 
             onClick={() => {
               const mensaje = `Hola, me interesa agendar el servicio: ${servicio.nombre_servicio} ($${parseFloat(servicio.precio).toFixed(2)})`;
-              const url = `https://wa.me/5217221234567?text=${encodeURIComponent(mensaje)}`;
+              const url = `https://wa.me/5217298028398?text=${encodeURIComponent(mensaje)}`;
               window.open(url, '_blank');
             }}
           >
