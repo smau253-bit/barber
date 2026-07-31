@@ -88,7 +88,107 @@ const corsOptions = {
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// ============================================
+// 🏠 RUTA PRINCIPAL (para evitar 404)
+// ============================================
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "🪒 Barbería API funcionando",
+    version: "1.0.0",
+    status: "online",
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: {
+        method: "GET",
+        path: "/api/health",
+        description: "Verificar estado del servidor y DB"
+      },
+      test: {
+        method: "GET",
+        path: "/api/test",
+        description: "Listar todos los endpoints"
+      },
+      login: {
+        method: "POST",
+        path: "/api/auth/login",
+        description: "Iniciar sesión"
+      },
+      empleados: {
+        method: "GET",
+        path: "/api/empleados",
+        description: "Listar todos los empleados"
+      },
+      productos: {
+        method: "GET",
+        path: "/api/productos",
+        description: "Listar todos los productos"
+      },
+      servicios: {
+        method: "GET",
+        path: "/api/servicios",
+        description: "Listar todos los servicios"
+      },
+      clientes: {
+        method: "GET",
+        path: "/api/clientes",
+        description: "Listar todos los clientes"
+      },
+      citas: {
+        method: "GET",
+        path: "/api/citas",
+        description: "Listar todas las citas"
+      },
+      ventas: {
+        method: "GET",
+        path: "/api/ventas",
+        description: "Listar todas las ventas"
+      },
+      dashboard: {
+        method: "GET",
+        path: "/api/dashboard/stats",
+        description: "Estadísticas del dashboard"
+      }
+    }
+  });
+});
 
+// ============================================
+// 🩺 HEALTH CHECK (más detallado)
+// ============================================
+app.get("/api/health", async (req, res) => {
+  try {
+    // Probar conexión a la base de datos
+    const [result] = await conexion.query("SELECT 1 as connected");
+    
+    res.json({
+      success: true,
+      status: "online",
+      environment: process.env.NODE_ENV || 'development',
+      database: {
+        connected: result[0].connected === 1,
+        host: process.env.DB_HOST || 'localhost',
+        name: process.env.DB_NAME || 'barberia'
+      },
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      status: "error",
+      message: "Error de conexión a la base de datos",
+      error: error.message
+    });
+  }
+});
+
+// ============================================
+// 🧪 ENDPOINT DE PRUEBA PARA VENTAS
+// ============================================
+app.get("/api/ventas-test", async (req, res) => {
+  // ... tu código existente ...
+});
 
   // 🧪 ENDPOINT DE PRUEBA PARA VENTAS
   app.get("/api/ventas-test", async (req, res) => {
