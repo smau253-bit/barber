@@ -221,23 +221,7 @@ const Detallese = ({ servicio, cerrar }) => {
           ✕
         </button>
         
-        {/* Indicador de modo (solo visible en desarrollo) */}
-        {usandoSimulacion && (
-          <div style={{
-            position: 'absolute',
-            top: '10px',
-            left: '10px',
-            backgroundColor: '#f0f0f0',
-            padding: '4px 10px',
-            borderRadius: '4px',
-            fontSize: '10px',
-            color: '#666',
-            zIndex: 10,
-            border: '1px solid #ddd'
-          }}>
-            ⚡ Demo
-          </div>
-        )}
+
         
         <div className="modal-imagen">
           <img 

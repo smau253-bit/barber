@@ -448,7 +448,7 @@ const Empleado = () => {
             EMPLEADOS {loading && <span>⏳</span>}
             {!loading && usandoSimulacion && (
               <span style={{ fontSize: '12px', color: '#666', marginLeft: '10px' }}>
-                ⚡ Demo
+         
               </span>
             )}
           </h2>
@@ -472,7 +472,7 @@ const Empleado = () => {
           </p>
           {usandoSimulacion && (
             <p style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
-              🔄 Modo demostración - Los datos se guardan en memoria
+           
             </p>
           )}
         </div>

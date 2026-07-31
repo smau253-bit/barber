@@ -431,7 +431,7 @@ const Producto = () => {
             PRODUCTOS {loading && <span>⏳</span>}
             {!loading && usandoSimulacion && (
               <span style={{ fontSize: '12px', color: '#666', marginLeft: '10px' }}>
-                ⚡ Demo
+           
               </span>
             )}
           </h2>
@@ -458,7 +458,7 @@ const Producto = () => {
             <h3>{productoEditando ? "EDITAR PRODUCTO" : "NUEVO PRODUCTO"}</h3>
             {usandoSimulacion && (
               <p style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
-                🔄 Modo demostración - Los datos se guardan en memoria
+   
               </p>
             )}
             

@@ -358,7 +358,7 @@ const Clientes = () => {
             CLIENTES {loading && <span>⏳</span>}
             {!loading && usandoSimulacion && (
               <span style={{ fontSize: '12px', color: '#666', marginLeft: '10px' }}>
-                ⚡ Demo
+             
               </span>
             )}
           </h2>
@@ -380,7 +380,7 @@ const Clientes = () => {
             <h3>{clienteEditando ? "EDITAR CLIENTE" : "NUEVO CLIENTE"}</h3>
             {usandoSimulacion && (
               <p style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
-                🔄 Modo demostración - Los datos se guardan localmente
+       
               </p>
             )}
             
