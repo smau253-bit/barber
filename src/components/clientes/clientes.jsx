@@ -1,10 +1,98 @@
-// Clientes.jsx - VERSIÓN ACTUALIZADA
+// Clientes.jsx - VERSIÓN SIN BD (CON SIMULACIÓN)
 import React, { useState, useEffect } from "react";
 import "./clientes.css";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/clientes';
+// ============================================
+// 📊 DATOS SIMULADOS (PARA PRUEBAS SIN BD)
+// ============================================
+let DATOS_SIMULADOS = {
+  clientes: [
+    { id_cliente: 1, nombre: 'Juan Pérez', telefono: '722 123 4567', correo: 'juan@email.com' },
+    { id_cliente: 2, nombre: 'María García', telefono: '722 234 5678', correo: 'maria@email.com' },
+    { id_cliente: 3, nombre: 'Pedro Rodríguez', telefono: '722 345 6789', correo: 'pedro@email.com' },
+    { id_cliente: 4, nombre: 'Laura Sánchez', telefono: '722 456 7890', correo: 'laura@email.com' },
+    { id_cliente: 5, nombre: 'Diego Ramírez', telefono: '722 567 8901', correo: 'diego@email.com' },
+    { id_cliente: 6, nombre: 'Sofía Torres', telefono: '722 678 9012', correo: 'sofia@email.com' },
+    { id_cliente: 7, nombre: 'Carlos Mendoza', telefono: '722 789 0123', correo: '' },
+    { id_cliente: 8, nombre: 'Ana Flores', telefono: '', correo: 'ana@email.com' },
+  ]
+};
+
+let contadorId = 9; // Para generar IDs automáticos
+
+// ============================================
+// 🟢 FUNCIONES SIMULADAS (SIN BD)
+// ============================================
+
+const cargarClientesSimulados = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        data: {
+          success: true,
+          data: DATOS_SIMULADOS.clientes
+        }
+      });
+    }, 500);
+  });
+};
+
+const guardarClienteSimulado = (cliente, editando) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (editando) {
+        // Actualizar
+        const index = DATOS_SIMULADOS.clientes.findIndex(c => c.id_cliente === cliente.id_cliente);
+        if (index !== -1) {
+          DATOS_SIMULADOS.clientes[index] = { ...DATOS_SIMULADOS.clientes[index], ...cliente };
+          resolve({ data: { success: true, message: 'Cliente actualizado' } });
+        } else {
+          reject({ response: { data: { message: 'Cliente no encontrado' } } });
+        }
+      } else {
+        // Crear nuevo
+        const nuevo = {
+          id_cliente: contadorId++,
+          ...cliente
+        };
+        DATOS_SIMULADOS.clientes.push(nuevo);
+        resolve({ data: { success: true, message: 'Cliente creado' } });
+      }
+    }, 500);
+  });
+};
+
+const eliminarClienteSimulado = (id) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = DATOS_SIMULADOS.clientes.findIndex(c => c.id_cliente === parseInt(id));
+      if (index !== -1) {
+        DATOS_SIMULADOS.clientes.splice(index, 1);
+        resolve({ data: { success: true, message: 'Cliente eliminado' } });
+      } else {
+        reject({ response: { data: { message: 'Cliente no encontrado' } } });
+      }
+    }, 500);
+  });
+};
+
+const buscarClienteSimulado = (termino) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const resultados = DATOS_SIMULADOS.clientes.filter(c => 
+        c.nombre.toLowerCase().includes(termino.toLowerCase())
+      );
+      resolve({
+        data: {
+          success: true,
+          data: resultados
+        }
+      });
+    }, 300);
+  });
+};
 
 const Clientes = () => {
   const [clientes, setClientes] = useState([]);
@@ -12,6 +100,7 @@ const Clientes = () => {
   const [clienteEditando, setClienteEditando] = useState(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [buscarTexto, setBuscarTexto] = useState("");
+  const [usandoSimulacion, setUsandoSimulacion] = useState(false);
 
   const [nuevoCliente, setNuevoCliente] = useState({
     nombre: "",
@@ -24,18 +113,45 @@ const Clientes = () => {
     cargarClientes();
   }, []);
 
+  // ============================================
+  // 🟡 FUNCIONES PRINCIPALES (CON SOPORTE BD)
+  // ============================================
+
   const cargarClientes = async () => {
     setLoading(true);
     try {
+      // ============================================
+      // 🟢 PARTE 1: DATOS SIMULADOS (SIN BD)
+      // ============================================
+      const response = await cargarClientesSimulados();
+      if (response.data.success) {
+        setClientes(response.data.data);
+        setUsandoSimulacion(true);
+      }
+      
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // DESCOMENTAR ESTA PARTE CUANDO TENGAS BD
+      // ============================================
+      
+      /*
       const response = await axios.get(API_URL);
       if (response.data.success) {
         setClientes(response.data.data);
+        setUsandoSimulacion(false);
       } else {
         alert('❌ ' + response.data.message);
       }
+      */
+      
     } catch (error) {
       console.error('Error cargando clientes:', error);
-      alert('❌ Error al cargar clientes');
+      // Si falla, usar datos simulados como respaldo
+      const response = await cargarClientesSimulados();
+      if (response.data.success) {
+        setClientes(response.data.data);
+        setUsandoSimulacion(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -65,20 +181,35 @@ const Clientes = () => {
 
       setLoading(true);
 
+      // ============================================
+      // 🟢 PARTE 1: GUARDAR SIMULADO (SIN BD)
+      // ============================================
+      const clienteData = {
+        ...nuevoCliente,
+        id_cliente: clienteEditando ? clienteEditando.id_cliente : null
+      };
+      
+      const response = await guardarClienteSimulado(clienteData, !!clienteEditando);
+      alert(response.data.success ? '✅ Cliente guardado' : '❌ Error');
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       let response;
       if (clienteEditando) {
-        // Actualizar
         response = await axios.put(`${API_URL}/${clienteEditando.id_cliente}`, nuevoCliente);
         if (response.data.success) {
           alert('✅ Cliente actualizado');
         }
       } else {
-        // Crear
         response = await axios.post(API_URL, nuevoCliente);
         if (response.data.success) {
           alert('✅ Cliente creado');
         }
       }
+      */
       
       await cargarClientes();
       setNuevoCliente({ nombre: "", telefono: "", correo: "" });
@@ -97,13 +228,27 @@ const Clientes = () => {
     
     try {
       setLoading(true);
+      
+      // ============================================
+      // 🟢 PARTE 1: ELIMINAR SIMULADO (SIN BD)
+      // ============================================
+      const response = await eliminarClienteSimulado(id);
+      alert(response.data.success ? '✅ Cliente eliminado' : '❌ Error');
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const response = await axios.delete(`${API_URL}/${id}`);
       if (response.data.success) {
         alert('✅ Cliente eliminado');
-        await cargarClientes();
-        setMostrarFormulario(false);
-        setClienteEditando(null);
       }
+      */
+      
+      await cargarClientes();
+      setMostrarFormulario(false);
+      setClienteEditando(null);
     } catch (error) {
       console.error('Error eliminando:', error);
       alert('❌ Error al eliminar');
@@ -136,7 +281,20 @@ const Clientes = () => {
     
     try {
       setLoading(true);
+      
+      // ============================================
+      // 🟢 PARTE 1: BUSCAR SIMULADO (SIN BD)
+      // ============================================
+      const response = await buscarClienteSimulado(buscarTexto);
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const response = await axios.get(`${API_URL}/search?termino=${buscarTexto}`);
+      */
+      
       if (response.data.success) {
         if (response.data.data.length > 0) {
           alert(`📋 Clientes encontrados:\n${response.data.data.map(c => `- ${c.nombre}`).join("\n")}`);
@@ -196,7 +354,14 @@ const Clientes = () => {
       <main className="main-content">
         {/* HEADER */}
         <header className="top-header">
-          <h2>CLIENTES {loading && <span>⏳</span>}</h2>
+          <h2>
+            CLIENTES {loading && <span>⏳</span>}
+            {!loading && usandoSimulacion && (
+              <span style={{ fontSize: '12px', color: '#666', marginLeft: '10px' }}>
+                ⚡ Demo
+              </span>
+            )}
+          </h2>
           <button 
             className="btn-nuevo"
             onClick={() => {
@@ -213,6 +378,11 @@ const Clientes = () => {
         {mostrarFormulario && (
           <div className="formulario-card">
             <h3>{clienteEditando ? "EDITAR CLIENTE" : "NUEVO CLIENTE"}</h3>
+            {usandoSimulacion && (
+              <p style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
+                🔄 Modo demostración - Los datos se guardan localmente
+              </p>
+            )}
             
             <div className="form-grid">
               <div className="form-group">
@@ -348,6 +518,26 @@ const Clientes = () => {
             </table>
           </div>
         </div>
+
+        {/* INDICADOR DE MODO */}
+        {usandoSimulacion && (
+          <div style={{
+            marginTop: '20px',
+            padding: '10px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '5px',
+            fontSize: '11px',
+            color: '#666',
+            textAlign: 'center',
+            border: '1px solid #e0e0e0'
+          }}>
+            ⚡ Módulo de clientes en modo <strong>DEMO</strong> - Los datos se guardan en memoria
+            <br />
+            <span style={{ fontSize: '10px', color: '#999' }}>
+              Para conectar con BD, descomenta las partes marcadas con "🟡 PARTE 2"
+            </span>
+          </div>
+        )}
       </main>
     </div>
   );

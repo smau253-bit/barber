@@ -1,10 +1,43 @@
-// Citas.jsx - VERSIÓN CON IDs
+// Citas.jsx - VERSIÓN SIN BD (CON SIMULACIÓN)
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import "./citas.css";
 
-const API_URL = 'http://localhost:5000/api/citas';
+// ============================================
+// 📊 DATOS SIMULADOS (PARA PRUEBAS SIN BD)
+// ============================================
+let DATOS_SIMULADOS = {
+  citas: [
+    { id_cita: 1, fecha: '2026-07-30', hora: '09:00', id_cliente: 1, cliente: 'Juan Pérez', id_empleado: 1, empleado: 'Carlos López', id_servicio: 1, servicio: 'Corte de cabello', estado: 'Confirmada' },
+    { id_cita: 2, fecha: '2026-07-30', hora: '10:30', id_cliente: 2, cliente: 'María García', id_empleado: 2, empleado: 'Ana Martínez', id_servicio: 2, servicio: 'Tinte', estado: 'Pendiente' },
+    { id_cita: 3, fecha: '2026-07-30', hora: '11:45', id_cliente: 3, cliente: 'Pedro Rodríguez', id_empleado: 1, empleado: 'Carlos López', id_servicio: 3, servicio: 'Barba', estado: 'Confirmada' },
+    { id_cita: 4, fecha: '2026-07-31', hora: '13:00', id_cliente: 4, cliente: 'Laura Sánchez', id_empleado: 2, empleado: 'Ana Martínez', id_servicio: 4, servicio: 'Corte y peinado', estado: 'Pendiente' },
+    { id_cita: 5, fecha: '2026-07-31', hora: '15:30', id_cliente: 5, cliente: 'Diego Ramírez', id_empleado: 1, empleado: 'Carlos López', id_servicio: 1, servicio: 'Corte de cabello', estado: 'Finalizada' },
+  ],
+  clientes: [
+    { id_cliente: 1, nombre: 'Juan Pérez' },
+    { id_cliente: 2, nombre: 'María García' },
+    { id_cliente: 3, nombre: 'Pedro Rodríguez' },
+    { id_cliente: 4, nombre: 'Laura Sánchez' },
+    { id_cliente: 5, nombre: 'Diego Ramírez' },
+    { id_cliente: 6, nombre: 'Sofía Torres' },
+  ],
+  empleados: [
+    { id_empleado: 1, nombre: 'Carlos López' },
+    { id_empleado: 2, nombre: 'Ana Martínez' },
+    { id_empleado: 3, nombre: 'Roberto Gómez' },
+  ],
+  servicios: [
+    { id_servicio: 1, nombre_servicio: 'Corte de cabello' },
+    { id_servicio: 2, nombre_servicio: 'Tinte' },
+    { id_servicio: 3, nombre_servicio: 'Barba' },
+    { id_servicio: 4, nombre_servicio: 'Corte y peinado' },
+    { id_servicio: 5, nombre_servicio: 'Tratamiento capilar' },
+  ]
+};
+
+let contadorId = 6; // Para generar IDs automáticos
 
 const Citas = () => {
   const [citas, setCitas] = useState([]);
@@ -15,6 +48,7 @@ const Citas = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [citaEditando, setCitaEditando] = useState(null);
   const [buscarId, setBuscarId] = useState("");
+  const [usandoSimulacion, setUsandoSimulacion] = useState(false);
   
   const [nuevaCita, setNuevaCita] = useState({
     fecha: "",
@@ -31,18 +65,130 @@ const Citas = () => {
     cargarSelectores();
   }, []);
 
+  // ============================================
+  // 🟢 FUNCIONES SIMULADAS (SIN BD)
+  // ============================================
+  
+  const cargarCitasSimuladas = () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          data: {
+            success: true,
+            data: DATOS_SIMULADOS.citas
+          }
+        });
+      }, 500);
+    });
+  };
+
+  const cargarSelectoresSimulados = () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          clientes: { data: { success: true, data: DATOS_SIMULADOS.clientes } },
+          empleados: { data: { success: true, data: DATOS_SIMULADOS.empleados } },
+          servicios: { data: { success: true, data: DATOS_SIMULADOS.servicios } }
+        });
+      }, 300);
+    });
+  };
+
+  const guardarCitaSimulada = (cita, editando) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (editando) {
+          // Actualizar
+          const index = DATOS_SIMULADOS.citas.findIndex(c => c.id_cita === cita.id_cita);
+          if (index !== -1) {
+            DATOS_SIMULADOS.citas[index] = { ...DATOS_SIMULADOS.citas[index], ...cita };
+            resolve({ data: { success: true, message: 'Cita actualizada' } });
+          } else {
+            reject({ response: { data: { message: 'Cita no encontrada' } } });
+          }
+        } else {
+          // Crear nueva
+          const nueva = {
+            id_cita: contadorId++,
+            ...cita,
+            cliente: DATOS_SIMULADOS.clientes.find(c => c.id_cliente === parseInt(cita.id_cliente))?.nombre || 'Cliente',
+            empleado: DATOS_SIMULADOS.empleados.find(e => e.id_empleado === parseInt(cita.id_empleado))?.nombre || 'Empleado',
+            servicio: DATOS_SIMULADOS.servicios.find(s => s.id_servicio === parseInt(cita.id_servicio))?.nombre_servicio || 'Servicio'
+          };
+          DATOS_SIMULADOS.citas.push(nueva);
+          resolve({ data: { success: true, message: 'Cita creada' } });
+        }
+      }, 500);
+    });
+  };
+
+  const eliminarCitaSimulada = (id) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const index = DATOS_SIMULADOS.citas.findIndex(c => c.id_cita === parseInt(id));
+        if (index !== -1) {
+          DATOS_SIMULADOS.citas.splice(index, 1);
+          resolve({ data: { success: true, message: 'Cita eliminada' } });
+        } else {
+          reject({ response: { data: { message: 'Cita no encontrada' } } });
+        }
+      }, 500);
+    });
+  };
+
+  const buscarCitaSimulada = (id) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const cita = DATOS_SIMULADOS.citas.find(c => c.id_cita === parseInt(id));
+        resolve({
+          data: {
+            success: true,
+            data: cita ? [cita] : []
+          }
+        });
+      }, 300);
+    });
+  };
+
+  // ============================================
+  // 🟡 FUNCIONES PRINCIPALES (CON SOPORTE BD)
+  // ============================================
+
   const cargarCitas = async () => {
     setLoading(true);
     try {
+      // ============================================
+      // 🟢 PARTE 1: DATOS SIMULADOS (SIN BD)
+      // ============================================
+      const response = await cargarCitasSimuladas();
+      if (response.data.success) {
+        setCitas(response.data.data);
+        setUsandoSimulacion(true);
+      }
+      
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // DESCOMENTAR ESTA PARTE CUANDO TENGAS BD
+      // ============================================
+      
+      /*
       const response = await axios.get(API_URL);
       if (response.data.success) {
         setCitas(response.data.data);
+        setUsandoSimulacion(false);
       } else {
         alert('❌ ' + response.data.message);
       }
+      */
+      
     } catch (error) {
       console.error('Error cargando citas:', error);
-      alert('❌ Error al cargar citas');
+      // Si falla, usar datos simulados como respaldo
+      const response = await cargarCitasSimuladas();
+      if (response.data.success) {
+        setCitas(response.data.data);
+        setUsandoSimulacion(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -50,25 +196,42 @@ const Citas = () => {
 
   const cargarSelectores = async () => {
     try {
-      // Cargar clientes
+      // ============================================
+      // 🟢 PARTE 1: DATOS SIMULADOS (SIN BD)
+      // ============================================
+      const data = await cargarSelectoresSimulados();
+      setClientes(data.clientes.data.data);
+      setEmpleados(data.empleados.data.data);
+      setServicios(data.servicios.data.data);
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const clientesRes = await axios.get(`${API_URL}/clientes`);
       if (clientesRes.data.success) {
         setClientes(clientesRes.data.data);
       }
 
-      // Cargar empleados
       const empleadosRes = await axios.get(`${API_URL}/empleados`);
       if (empleadosRes.data.success) {
         setEmpleados(empleadosRes.data.data);
       }
 
-      // Cargar servicios
       const serviciosRes = await axios.get(`${API_URL}/servicios`);
       if (serviciosRes.data.success) {
         setServicios(serviciosRes.data.data);
       }
+      */
+      
     } catch (error) {
       console.error('Error cargando selectores:', error);
+      // Usar datos simulados como respaldo
+      const data = await cargarSelectoresSimulados();
+      setClientes(data.clientes.data.data);
+      setEmpleados(data.empleados.data.data);
+      setServicios(data.servicios.data.data);
     }
   };
 
@@ -110,20 +273,35 @@ const Citas = () => {
 
       setLoading(true);
 
+      // ============================================
+      // 🟢 PARTE 1: GUARDAR SIMULADO (SIN BD)
+      // ============================================
+      const citaData = {
+        ...nuevaCita,
+        id_cita: citaEditando ? citaEditando.id_cita : null
+      };
+      
+      const response = await guardarCitaSimulada(citaData, !!citaEditando);
+      alert(response.data.success ? '✅ Cita guardada' : '❌ Error');
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       let response;
       if (citaEditando) {
-        // Actualizar
         response = await axios.put(`${API_URL}/${citaEditando.id_cita}`, nuevaCita);
         if (response.data.success) {
           alert('✅ Cita actualizada');
         }
       } else {
-        // Crear
         response = await axios.post(API_URL, nuevaCita);
         if (response.data.success) {
           alert('✅ Cita creada');
         }
       }
+      */
       
       await cargarCitas();
       setNuevaCita({ fecha: "", hora: "", id_cliente: "", id_empleado: "", id_servicio: "", estado: "Pendiente" });
@@ -142,9 +320,9 @@ const Citas = () => {
     setNuevaCita({
       fecha: cita.fecha || "",
       hora: cita.hora || "",
-      id_cliente: cita.id_cliente || "",
-      id_empleado: cita.id_empleado || "",
-      id_servicio: cita.id_servicio || "",
+      id_cliente: cita.id_cliente ? String(cita.id_cliente) : "",
+      id_empleado: cita.id_empleado ? String(cita.id_empleado) : "",
+      id_servicio: cita.id_servicio ? String(cita.id_servicio) : "",
       estado: cita.estado || "Pendiente"
     });
     setMostrarFormulario(true);
@@ -155,11 +333,25 @@ const Citas = () => {
     
     try {
       setLoading(true);
+      
+      // ============================================
+      // 🟢 PARTE 1: ELIMINAR SIMULADO (SIN BD)
+      // ============================================
+      const response = await eliminarCitaSimulada(id);
+      alert(response.data.success ? '✅ Cita eliminada' : '❌ Error');
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const response = await axios.delete(`${API_URL}/${id}`);
       if (response.data.success) {
         alert('✅ Cita eliminada');
-        await cargarCitas();
       }
+      */
+      
+      await cargarCitas();
     } catch (error) {
       console.error('Error eliminando:', error);
       alert('❌ Error al eliminar');
@@ -176,7 +368,20 @@ const Citas = () => {
     
     try {
       setLoading(true);
+      
+      // ============================================
+      // 🟢 PARTE 1: BUSCAR SIMULADO (SIN BD)
+      // ============================================
+      const response = await buscarCitaSimulada(buscarId);
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const response = await axios.get(`${API_URL}/search?id=${buscarId}`);
+      */
+      
       if (response.data.success) {
         if (response.data.data.length > 0) {
           const cita = response.data.data[0];
@@ -242,7 +447,14 @@ const Citas = () => {
       {/* MAIN CONTENT */}
       <main className="main-content">
         <header className="top-header">
-          <h2>CITAS {loading && <span>⏳</span>}</h2>
+          <h2>
+            CITAS {loading && <span>⏳</span>}
+            {!loading && usandoSimulacion && (
+              <span style={{ fontSize: '12px', color: '#666', marginLeft: '10px' }}>
+                ⚡ Demo
+              </span>
+            )}
+          </h2>
           <button 
             className="btn-nuevo"
             onClick={() => {
@@ -259,6 +471,11 @@ const Citas = () => {
         {mostrarFormulario && (
           <div className="formulario-card">
             <h3>{citaEditando ? "EDITAR CITA" : "NUEVA CITA"}</h3>
+            {usandoSimulacion && (
+              <p style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
+                🔄 Modo demostración - Los datos se guardan localmente
+              </p>
+            )}
             
             <div className="form-grid">
               <div className="form-group">
@@ -463,6 +680,26 @@ const Citas = () => {
             </table>
           </div>
         </div>
+
+        {/* INDICADOR DE MODO */}
+        {usandoSimulacion && (
+          <div style={{
+            marginTop: '20px',
+            padding: '10px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '5px',
+            fontSize: '11px',
+            color: '#666',
+            textAlign: 'center',
+            border: '1px solid #e0e0e0'
+          }}>
+            ⚡ Módulo de citas en modo <strong>DEMO</strong> - Los datos se guardan en memoria
+            <br />
+            <span style={{ fontSize: '10px', color: '#999' }}>
+              Para conectar con BD, descomenta las partes marcadas con "🟡 PARTE 2"
+            </span>
+          </div>
+        )}
       </main>
     </div>
   );

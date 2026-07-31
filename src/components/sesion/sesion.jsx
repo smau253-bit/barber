@@ -2,6 +2,22 @@ import "./sesion.css";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
+// USUARIOS DE PRUEBA (SIMULACIÓN DE BD)
+const USUARIOS_VALIDOS = [
+  {
+    correo: "admin@elitecut.com",
+    password: "admin123",
+    nombre: "Administrador",
+    rol: "admin"
+  },
+  {
+    correo: "usuario@demo.com",
+    password: "demo123",
+    nombre: "Usuario Demo",
+    rol: "usuario"
+  }
+];
+
 function Sesion() {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
@@ -9,40 +25,86 @@ function Sesion() {
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
 
+  // 🔧 FUNCIÓN SIMULADA (PARA CUANDO NO HAY BD)
+  const loginSimulado = (correo, password) => {
+    // Buscar usuario en el array local
+    const usuario = USUARIOS_VALIDOS.find(
+      u => u.correo === correo && u.password === password
+    );
+    
+    if (usuario) {
+      return {
+        success: true,
+        usuario: {
+          correo: usuario.correo,
+          nombre: usuario.nombre,
+          rol: usuario.rol
+        }
+      };
+    } else {
+      return {
+        success: false,
+        message: "Credenciales incorrectas"
+      };
+    }
+  };
+
   const iniciarSesion = async (e) => {
     e.preventDefault();
     setCargando(true);
     setError("");
 
     try {
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      // ============================================
+      // 🟢 PARTE 1: LOGIN SIMULADO (SIN BD)
+      // ============================================
+      
+      // Simular delay de red (como si fuera una petición real)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const resultado = loginSimulado(correo, password);
+      
+      if (resultado.success) {
+        localStorage.setItem("usuario", JSON.stringify(resultado.usuario));
+        alert("✅ ¡Inicio de sesión exitoso!");
+        window.location.href = "/dashboard";
+      } else {
+        setError(resultado.message);
+      }
 
-const response = await fetch(`${API_URL}/api/auth/login`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({ correo, password }),
-});
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // DESCOMENTAR ESTA PARTE CUANDO TENGAS BD
+      // ============================================
+      
+      /*
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const response = await fetch(`${API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ correo, password }),
+      });
 
       const text = await response.text();
-console.log(text);
+      console.log(text);
 
-if (!response.ok) {
-  throw new Error(text);
-}
+      if (!response.ok) {
+        throw new Error(text);
+      }
 
-const data = JSON.parse(text);
+      const data = JSON.parse(text);
 
       if (data.success) {
-        // Guardar usuario en localStorage o contexto
         localStorage.setItem("usuario", JSON.stringify(data.usuario));
         alert("✅ ¡Inicio de sesión exitoso!");
-        // Redirigir al dashboard
         window.location.href = "/dashboard";
       } else {
         setError(data.message);
       }
+      */
+
     } catch (error) {
       console.error("Error:", error);
       setError("Error de conexión con el servidor");
@@ -106,6 +168,22 @@ const data = JSON.parse(text);
 
         <div className="demo">
           <strong>Demo:</strong> admin@elitecut.com / admin123
+        </div>
+
+        {/* 📝 INDICADOR DE MODO */}
+        <div style={{ 
+          marginTop: "10px", 
+          fontSize: "12px", 
+          color: "#666",
+          textAlign: "center",
+          borderTop: "1px solid #eee",
+          paddingTop: "10px"
+        }}>
+          ⚡ Modo: <strong>Sin BD</strong> (Simulación local)
+          <br />
+          <span style={{ fontSize: "10px", color: "#999" }}>
+            Usuarios: admin@elitecut.com | usuario@demo.com
+          </span>
         </div>
       </div>
     </div>

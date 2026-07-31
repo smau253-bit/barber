@@ -1,10 +1,32 @@
-// Dashboard.jsx - VERSIÓN CON BACKEND
+// Dashboard.jsx - VERSIÓN SIN BD (CON SIMULACIÓN)
 import React, { useState, useEffect } from "react";
 import "./dashboard.css";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/dashboard';
+// ============================================
+// 📊 DATOS SIMULADOS (PARA PRUEBAS SIN BD)
+// ============================================
+const DATOS_SIMULADOS = {
+  stats: {
+    clientes: 156,
+    citasHoy: 8,
+    servicios: 12,
+    pendientes: 3,
+    productos: 45,
+    empleados: 6,
+    ventasHoy: 5,
+    montoVentasHoy: 1250
+  },
+  citasHoy: [
+    { id_cita: 1, hora: '09:00', cliente: 'Juan Pérez', empleado: 'Carlos López', servicio: 'Corte de cabello', estado: 'Confirmada' },
+    { id_cita: 2, hora: '10:30', cliente: 'María García', empleado: 'Ana Martínez', servicio: 'Tinte', estado: 'Pendiente' },
+    { id_cita: 3, hora: '11:45', cliente: 'Pedro Rodríguez', empleado: 'Carlos López', servicio: 'Barba', estado: 'Confirmada' },
+    { id_cita: 4, hora: '13:00', cliente: 'Laura Sánchez', empleado: 'Ana Martínez', servicio: 'Corte y peinado', estado: 'Pendiente' },
+    { id_cita: 5, hora: '15:30', cliente: 'Diego Ramírez', empleado: 'Carlos López', servicio: 'Corte de cabello', estado: 'Confirmada' },
+    { id_cita: 6, hora: '17:00', cliente: 'Sofía Torres', empleado: 'Ana Martínez', servicio: 'Tinte y corte', estado: 'Finalizada' }
+  ]
+};
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -19,6 +41,7 @@ const Dashboard = () => {
   });
   const [citasHoy, setCitasHoy] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [usandoSimulacion, setUsandoSimulacion] = useState(false);
 
   // Cargar datos al iniciar
   useEffect(() => {
@@ -27,20 +50,49 @@ const Dashboard = () => {
 
   const cargarDashboard = async () => {
     setLoading(true);
+    
     try {
-      // Cargar estadísticas
+      // ============================================
+      // 🟢 PARTE 1: DATOS SIMULADOS (SIN BD)
+      // ============================================
+      
+      // Simular delay de red
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Usar datos simulados
+      setStats(DATOS_SIMULADOS.stats);
+      setCitasHoy(DATOS_SIMULADOS.citasHoy);
+      setUsandoSimulacion(true);
+      
+      console.log('📊 Usando datos simulados (sin BD)');
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // DESCOMENTAR ESTA PARTE CUANDO TENGAS BD
+      // ============================================
+      
+      /*
+      // Cargar estadísticas desde BD
       const statsResponse = await axios.get(`${API_URL}/stats`);
       if (statsResponse.data.success) {
         setStats(statsResponse.data.data);
       }
 
-      // Cargar citas de hoy
+      // Cargar citas de hoy desde BD
       const citasResponse = await axios.get(`${API_URL}/citas-hoy`);
       if (citasResponse.data.success) {
         setCitasHoy(citasResponse.data.data);
       }
+      */
+      
     } catch (error) {
       console.error('Error cargando dashboard:', error);
+      
+      // Si falla la BD, usar datos simulados como respaldo
+      console.log('⚠️ Usando datos simulados como respaldo');
+      setStats(DATOS_SIMULADOS.stats);
+      setCitasHoy(DATOS_SIMULADOS.citasHoy);
+      setUsandoSimulacion(true);
     } finally {
       setLoading(false);
     }
@@ -101,12 +153,25 @@ const Dashboard = () => {
       {/* MAIN CONTENT */}
       <main className="main-content">
         <header className="top-header">
-          <h2>PANEL DE CONTROL {loading && <span>⏳</span>}</h2>
+          <h2>
+            PANEL DE CONTROL 
+            {loading && <span> ⏳</span>}
+            {!loading && usandoSimulacion && (
+              <span style={{ fontSize: '12px', color: '#666', marginLeft: '10px' }}>
+                ⚡ Demo
+              </span>
+            )}
+          </h2>
         </header>
 
         <section className="welcome-section">
           <h3>BIENVENIDO</h3>
           <p>Panel de control - Administrador</p>
+          {usandoSimulacion && (
+            <p style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+              🔄 Modo demostración (datos de prueba)
+            </p>
+          )}
         </section>
 
         {/* STATS CARDS */}
@@ -181,6 +246,26 @@ const Dashboard = () => {
             <button className="action-btn">NUEVA CITA</button>
           </Link>
         </div>
+
+        {/* INDICADOR DE MODO */}
+        {usandoSimulacion && (
+          <div style={{
+            marginTop: '20px',
+            padding: '10px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '5px',
+            fontSize: '11px',
+            color: '#666',
+            textAlign: 'center',
+            border: '1px solid #e0e0e0'
+          }}>
+            ⚡ Dashboard en modo <strong>DEMO</strong> - Los datos son de prueba
+            <br />
+            <span style={{ fontSize: '10px', color: '#999' }}>
+              Para conectar con BD, descomenta la Parte 2 en cargarDashboard()
+            </span>
+          </div>
+        )}
       </main>
     </div>
   );

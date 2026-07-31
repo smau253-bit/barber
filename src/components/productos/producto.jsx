@@ -1,41 +1,191 @@
-// Productos.jsx - VERSIÓN SIMPLIFICADA CON BASE64
+// Productos.jsx - VERSIÓN SIN BD (CON SIMULACIÓN)
 import React, { useState, useEffect } from "react";
 import "./producto.css";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/productos';
+// ============================================
+// 📊 DATOS SIMULADOS (PARA PRUEBAS SIN BD)
+// ============================================
+// Imágenes en Base64 (simuladas)
+const IMAGEN_POR_DEFECTO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='14' fill='%23999' text-anchor='middle' dy='.3em'%3ESin imagen%3C/text%3E%3C/svg%3E";
+
+let DATOS_SIMULADOS = {
+  productos: [
+    { 
+      id_producto: 1, 
+      nombre_producto: 'Cera para Cabello Profesional', 
+      descripcion: 'Cera de alta fijación para estilos duraderos', 
+      precio: 350.00, 
+      stock: 15,
+      imagen: IMAGEN_POR_DEFECTO
+    },
+    { 
+      id_producto: 2, 
+      nombre_producto: 'Tijeras Profesionales', 
+      descripcion: 'Tijeras de acero inoxidable japonés', 
+      precio: 1200.00, 
+      stock: 8,
+      imagen: IMAGEN_POR_DEFECTO
+    },
+    { 
+      id_producto: 3, 
+      nombre_producto: 'Aceite para Barba', 
+      descripcion: 'Aceite natural con ingredientes orgánicos', 
+      precio: 280.00, 
+      stock: 20,
+      imagen: IMAGEN_POR_DEFECTO
+    },
+    { 
+      id_producto: 4, 
+      nombre_producto: 'Navaja de Afeitar Clásica', 
+      descripcion: 'Navaja de acero carbono con mango de madera', 
+      precio: 450.00, 
+      stock: 5,
+      imagen: IMAGEN_POR_DEFECTO
+    },
+    { 
+      id_producto: 5, 
+      nombre_producto: 'Shampoo Fortalecedor', 
+      descripcion: 'Shampoo con biotina y queratina', 
+      precio: 320.00, 
+      stock: 0,
+      imagen: IMAGEN_POR_DEFECTO
+    }
+  ]
+};
+
+let contadorId = 6; // Para generar IDs automáticos
+
+// ============================================
+// 🟢 FUNCIONES SIMULADAS (SIN BD)
+// ============================================
+
+const cargarProductosSimulados = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        data: {
+          success: true,
+          data: DATOS_SIMULADOS.productos
+        }
+      });
+    }, 500);
+  });
+};
+
+const guardarProductoSimulado = (producto, editando) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (editando) {
+        // Actualizar
+        const index = DATOS_SIMULADOS.productos.findIndex(p => p.id_producto === producto.id_producto);
+        if (index !== -1) {
+          DATOS_SIMULADOS.productos[index] = { ...DATOS_SIMULADOS.productos[index], ...producto };
+          resolve({ data: { success: true, message: 'Producto actualizado' } });
+        } else {
+          reject({ response: { data: { message: 'Producto no encontrado' } } });
+        }
+      } else {
+        // Crear nuevo
+        const nuevo = {
+          id_producto: contadorId++,
+          ...producto
+        };
+        DATOS_SIMULADOS.productos.push(nuevo);
+        resolve({ data: { success: true, message: 'Producto creado' } });
+      }
+    }, 500);
+  });
+};
+
+const eliminarProductoSimulado = (id) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = DATOS_SIMULADOS.productos.findIndex(p => p.id_producto === parseInt(id));
+      if (index !== -1) {
+        DATOS_SIMULADOS.productos.splice(index, 1);
+        resolve({ data: { success: true, message: 'Producto eliminado' } });
+      } else {
+        reject({ response: { data: { message: 'Producto no encontrado' } } });
+      }
+    }, 500);
+  });
+};
+
+const buscarProductoSimulado = (termino) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const resultados = DATOS_SIMULADOS.productos.filter(p => 
+        p.nombre_producto.toLowerCase().includes(termino.toLowerCase())
+      );
+      resolve({
+        data: {
+          success: true,
+          data: resultados
+        }
+      });
+    }, 300);
+  });
+};
 
 const Producto = () => {
-  
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [buscarTexto, setBuscarTexto] = useState("");
+  const [usandoSimulacion, setUsandoSimulacion] = useState(false);
 
   const [nuevoProducto, setNuevoProducto] = useState({
     nombre_producto: "",
     descripcion: "",
     precio: 0,
     stock: 0,
-    imagen: "" // Aquí guardaremos la imagen en Base64
+    imagen: ""
   });
 
   useEffect(() => {
     cargarProductos();
   }, []);
 
+  // ============================================
+  // 🟡 FUNCIONES PRINCIPALES (CON SOPORTE BD)
+  // ============================================
+
   const cargarProductos = async () => {
     setLoading(true);
     try {
+      // ============================================
+      // 🟢 PARTE 1: DATOS SIMULADOS (SIN BD)
+      // ============================================
+      const response = await cargarProductosSimulados();
+      if (response.data.success) {
+        setProductos(response.data.data);
+        setUsandoSimulacion(true);
+      }
+      
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // DESCOMENTAR ESTA PARTE CUANDO TENGAS BD
+      // ============================================
+      
+      /*
       const response = await axios.get(API_URL);
       if (response.data.success) {
         setProductos(response.data.data);
+        setUsandoSimulacion(false);
       }
+      */
+      
     } catch (error) {
       console.error('Error:', error);
-      alert('❌ Error al cargar productos');
+      // Si falla, usar datos simulados como respaldo
+      const response = await cargarProductosSimulados();
+      if (response.data.success) {
+        setProductos(response.data.data);
+        setUsandoSimulacion(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -95,20 +245,35 @@ const Producto = () => {
 
       setLoading(true);
 
+      // ============================================
+      // 🟢 PARTE 1: GUARDAR SIMULADO (SIN BD)
+      // ============================================
+      const productoData = {
+        ...nuevoProducto,
+        id_producto: productoEditando ? productoEditando.id_producto : null
+      };
+      
+      const response = await guardarProductoSimulado(productoData, !!productoEditando);
+      alert(response.data.success ? '✅ Producto guardado' : '❌ Error');
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       let response;
       if (productoEditando) {
-        // Actualizar
         response = await axios.put(`${API_URL}/${productoEditando.id_producto}`, nuevoProducto);
         if (response.data.success) {
           alert('✅ Producto actualizado');
         }
       } else {
-        // Crear
         response = await axios.post(API_URL, nuevoProducto);
         if (response.data.success) {
           alert('✅ Producto creado');
         }
       }
+      */
       
       await cargarProductos();
       setNuevoProducto({ 
@@ -133,11 +298,25 @@ const Producto = () => {
     
     try {
       setLoading(true);
+      
+      // ============================================
+      // 🟢 PARTE 1: ELIMINAR SIMULADO (SIN BD)
+      // ============================================
+      const response = await eliminarProductoSimulado(id);
+      alert(response.data.success ? '✅ Producto eliminado' : '❌ Error');
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const response = await axios.delete(`${API_URL}/${id}`);
       if (response.data.success) {
         alert('✅ Producto eliminado');
-        await cargarProductos();
       }
+      */
+      
+      await cargarProductos();
     } catch (error) {
       console.error('Error:', error);
       alert('❌ Error al eliminar');
@@ -178,7 +357,20 @@ const Producto = () => {
     
     try {
       setLoading(true);
+      
+      // ============================================
+      // 🟢 PARTE 1: BUSCAR SIMULADO (SIN BD)
+      // ============================================
+      const response = await buscarProductoSimulado(buscarTexto);
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const response = await axios.get(`${API_URL}/search?termino=${buscarTexto}`);
+      */
+      
       if (response.data.success) {
         if (response.data.data.length > 0) {
           alert(`📋 Encontrados: ${response.data.data.length} producto(s)`);
@@ -235,7 +427,14 @@ const Producto = () => {
 
       <main className="main-content">
         <header className="top-header">
-          <h2>PRODUCTOS {loading && <span>⏳</span>}</h2>
+          <h2>
+            PRODUCTOS {loading && <span>⏳</span>}
+            {!loading && usandoSimulacion && (
+              <span style={{ fontSize: '12px', color: '#666', marginLeft: '10px' }}>
+                ⚡ Demo
+              </span>
+            )}
+          </h2>
           <button 
             className="btn-nuevo"
             onClick={() => {
@@ -257,6 +456,11 @@ const Producto = () => {
         {mostrarFormulario && (
           <div className="formulario-card">
             <h3>{productoEditando ? "EDITAR PRODUCTO" : "NUEVO PRODUCTO"}</h3>
+            {usandoSimulacion && (
+              <p style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
+                🔄 Modo demostración - Los datos se guardan en memoria
+              </p>
+            )}
             
             <div className="form-grid">
               <div className="form-group">
@@ -426,7 +630,7 @@ const Producto = () => {
                     <tr key={producto.id_producto}>
                       <td>{index + 1}</td>
                       <td>
-                        {producto.imagen ? (
+                        {producto.imagen && producto.imagen !== IMAGEN_POR_DEFECTO ? (
                           <img 
                             src={producto.imagen} 
                             alt={producto.nombre_producto}
@@ -445,7 +649,14 @@ const Producto = () => {
                       <td>{producto.nombre_producto}</td>
                       <td className="hide-mobile">{producto.descripcion || '-'}</td>
                       <td>${parseFloat(producto.precio).toFixed(2)}</td>
-                      <td>{producto.stock}</td>
+                      <td>
+                        <span style={{ 
+                          color: producto.stock > 0 ? '#28a745' : '#dc3545',
+                          fontWeight: 'bold'
+                        }}>
+                          {producto.stock}
+                        </span>
+                      </td>
                       <td>
                         <div className="acciones">
                           <button className="btn-edit" onClick={() => handleEditar(producto)} disabled={loading}>
@@ -463,6 +674,30 @@ const Producto = () => {
             </table>
           </div>
         </div>
+
+        {/* INDICADOR DE MODO */}
+        {usandoSimulacion && (
+          <div style={{
+            marginTop: '20px',
+            padding: '10px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '5px',
+            fontSize: '11px',
+            color: '#666',
+            textAlign: 'center',
+            border: '1px solid #e0e0e0'
+          }}>
+            ⚡ Módulo de productos en modo <strong>DEMO</strong> - Los datos se guardan en memoria
+            <br />
+            <span style={{ fontSize: '10px', color: '#999' }}>
+              Las imágenes se guardan en Base64 (máximo 2MB)
+            </span>
+            <br />
+            <span style={{ fontSize: '10px', color: '#999' }}>
+              Para conectar con BD, descomenta las partes marcadas con "🟡 PARTE 2"
+            </span>
+          </div>
+        )}
       </main>
     </div>
   );

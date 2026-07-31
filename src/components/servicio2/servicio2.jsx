@@ -1,10 +1,128 @@
-// Servicios.jsx - VERSIÓN CON IMÁGENES COMPLETA
+// Servicios.jsx - VERSIÓN SIN BD (CON SIMULACIÓN)
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import "./servicio2.css";
 
-const API_URL = 'http://localhost:5000/api/servicios';
+// ============================================
+// 📊 DATOS SIMULADOS (PARA PRUEBAS SIN BD)
+// ============================================
+// Imagen por defecto en Base64 (SVG simple)
+const IMAGEN_POR_DEFECTO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='14' fill='%23999' text-anchor='middle' dy='.3em'%3EServicio%3C/text%3E%3C/svg%3E";
+
+let DATOS_SIMULADOS = {
+  servicios: [
+    { 
+      id_servicio: 1, 
+      nombre_servicio: 'Corte de Cabello Premium', 
+      descripcion: 'Corte con técnica de tijera y máquina. Incluye lavado y styling.', 
+      precio: 350.00,
+      imagen: IMAGEN_POR_DEFECTO
+    },
+    { 
+      id_servicio: 2, 
+      nombre_servicio: 'Barba y Bigote', 
+      descripcion: 'Perfilado y recorte de barba con aceite y bálsamo.', 
+      precio: 250.00,
+      imagen: IMAGEN_POR_DEFECTO
+    },
+    { 
+      id_servicio: 3, 
+      nombre_servicio: 'Tinte de Cabello', 
+      descripcion: 'Coloración profesional con productos de alta calidad.', 
+      precio: 550.00,
+      imagen: IMAGEN_POR_DEFECTO
+    },
+    { 
+      id_servicio: 4, 
+      nombre_servicio: 'Tratamiento Capilar', 
+      descripcion: 'Tratamiento con keratina y vitaminas para cabello dañado.', 
+      precio: 480.00,
+      imagen: IMAGEN_POR_DEFECTO
+    },
+    { 
+      id_servicio: 5, 
+      nombre_servicio: 'Combo Corte + Barba', 
+      descripcion: 'Paquete completo de corte y arreglo de barba.', 
+      precio: 520.00,
+      imagen: IMAGEN_POR_DEFECTO
+    }
+  ]
+};
+
+let contadorId = 6; // Para generar IDs automáticos
+
+// ============================================
+// 🟢 FUNCIONES SIMULADAS (SIN BD)
+// ============================================
+
+const cargarServiciosSimulados = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        data: {
+          success: true,
+          data: DATOS_SIMULADOS.servicios
+        }
+      });
+    }, 500);
+  });
+};
+
+const guardarServicioSimulado = (servicio, editando) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (editando) {
+        // Actualizar
+        const index = DATOS_SIMULADOS.servicios.findIndex(s => s.id_servicio === servicio.id_servicio);
+        if (index !== -1) {
+          DATOS_SIMULADOS.servicios[index] = { ...DATOS_SIMULADOS.servicios[index], ...servicio };
+          resolve({ data: { success: true, message: 'Servicio actualizado' } });
+        } else {
+          reject({ response: { data: { message: 'Servicio no encontrado' } } });
+        }
+      } else {
+        // Crear nuevo
+        const nuevo = {
+          id_servicio: contadorId++,
+          ...servicio
+        };
+        DATOS_SIMULADOS.servicios.push(nuevo);
+        resolve({ data: { success: true, message: 'Servicio creado' } });
+      }
+    }, 500);
+  });
+};
+
+const eliminarServicioSimulado = (id) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = DATOS_SIMULADOS.servicios.findIndex(s => s.id_servicio === parseInt(id));
+      if (index !== -1) {
+        DATOS_SIMULADOS.servicios.splice(index, 1);
+        resolve({ data: { success: true, message: 'Servicio eliminado' } });
+      } else {
+        reject({ response: { data: { message: 'Servicio no encontrado' } } });
+      }
+    }, 500);
+  });
+};
+
+const buscarServicioSimulado = (termino) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const resultados = DATOS_SIMULADOS.servicios.filter(s => 
+        s.nombre_servicio.toLowerCase().includes(termino.toLowerCase())
+      );
+      resolve({
+        data: {
+          success: true,
+          data: resultados
+        }
+      });
+    }, 300);
+  });
+};
 
 const Servicios = () => {
   const [servicios, setServicios] = useState([]);
@@ -12,12 +130,13 @@ const Servicios = () => {
   const [servicioEditando, setServicioEditando] = useState(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [buscarTexto, setBuscarTexto] = useState("");
+  const [usandoSimulacion, setUsandoSimulacion] = useState(false);
 
   const [nuevoServicio, setNuevoServicio] = useState({
     nombre_servicio: "",
     descripcion: "",
     precio: 0,
-    imagen: "" // Campo para la imagen
+    imagen: ""
   });
 
   // Cargar servicios al iniciar
@@ -25,18 +144,45 @@ const Servicios = () => {
     cargarServicios();
   }, []);
 
+  // ============================================
+  // 🟡 FUNCIONES PRINCIPALES (CON SOPORTE BD)
+  // ============================================
+
   const cargarServicios = async () => {
     setLoading(true);
     try {
+      // ============================================
+      // 🟢 PARTE 1: DATOS SIMULADOS (SIN BD)
+      // ============================================
+      const response = await cargarServiciosSimulados();
+      if (response.data.success) {
+        setServicios(response.data.data);
+        setUsandoSimulacion(true);
+      }
+      
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // DESCOMENTAR ESTA PARTE CUANDO TENGAS BD
+      // ============================================
+      
+      /*
       const response = await axios.get(API_URL);
       if (response.data.success) {
         setServicios(response.data.data);
+        setUsandoSimulacion(false);
       } else {
         alert('❌ ' + response.data.message);
       }
+      */
+      
     } catch (error) {
       console.error('Error cargando servicios:', error);
-      alert('❌ Error al cargar servicios');
+      // Si falla, usar datos simulados como respaldo
+      const response = await cargarServiciosSimulados();
+      if (response.data.success) {
+        setServicios(response.data.data);
+        setUsandoSimulacion(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -102,7 +248,22 @@ const Servicios = () => {
 
       setLoading(true);
 
-      // Preparar datos con imagen
+      // ============================================
+      // 🟢 PARTE 1: GUARDAR SIMULADO (SIN BD)
+      // ============================================
+      const servicioData = {
+        ...nuevoServicio,
+        id_servicio: servicioEditando ? servicioEditando.id_servicio : null
+      };
+      
+      const response = await guardarServicioSimulado(servicioData, !!servicioEditando);
+      alert(response.data.success ? '✅ Servicio guardado' : '❌ Error');
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const datosServicio = {
         nombre_servicio: nuevoServicio.nombre_servicio,
         descripcion: nuevoServicio.descripcion,
@@ -112,18 +273,17 @@ const Servicios = () => {
 
       let response;
       if (servicioEditando) {
-        // Actualizar
         response = await axios.put(`${API_URL}/${servicioEditando.id_servicio}`, datosServicio);
         if (response.data.success) {
           alert('✅ Servicio actualizado');
         }
       } else {
-        // Crear
         response = await axios.post(API_URL, datosServicio);
         if (response.data.success) {
           alert('✅ Servicio creado');
         }
       }
+      */
       
       await cargarServicios();
       setNuevoServicio({ 
@@ -147,13 +307,27 @@ const Servicios = () => {
     
     try {
       setLoading(true);
+      
+      // ============================================
+      // 🟢 PARTE 1: ELIMINAR SIMULADO (SIN BD)
+      // ============================================
+      const response = await eliminarServicioSimulado(id);
+      alert(response.data.success ? '✅ Servicio eliminado' : '❌ Error');
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const response = await axios.delete(`${API_URL}/${id}`);
       if (response.data.success) {
         alert('✅ Servicio eliminado');
-        await cargarServicios();
-        setMostrarFormulario(false);
-        setServicioEditando(null);
       }
+      */
+      
+      await cargarServicios();
+      setMostrarFormulario(false);
+      setServicioEditando(null);
     } catch (error) {
       console.error('Error eliminando:', error);
       alert('❌ Error al eliminar');
@@ -168,7 +342,7 @@ const Servicios = () => {
       nombre_servicio: servicio.nombre_servicio,
       descripcion: servicio.descripcion || "",
       precio: servicio.precio,
-      imagen: servicio.imagen || "" // Cargar imagen existente
+      imagen: servicio.imagen || ""
     });
     setMostrarFormulario(true);
   };
@@ -192,7 +366,20 @@ const Servicios = () => {
     
     try {
       setLoading(true);
+      
+      // ============================================
+      // 🟢 PARTE 1: BUSCAR SIMULADO (SIN BD)
+      // ============================================
+      const response = await buscarServicioSimulado(buscarTexto);
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const response = await axios.get(`${API_URL}/search?termino=${buscarTexto}`);
+      */
+      
       if (response.data.success) {
         if (response.data.data.length > 0) {
           alert(`📋 Encontrados:\n${response.data.data.map(s => `- ${s.nombre_servicio}`).join("\n")}`);
@@ -251,7 +438,14 @@ const Servicios = () => {
       {/* MAIN CONTENT */}
       <main className="main-content">
         <header className="top-header">
-          <h2>SERVICIOS {loading && <span>⏳</span>}</h2>
+          <h2>
+            SERVICIOS {loading && <span>⏳</span>}
+            {!loading && usandoSimulacion && (
+              <span style={{ fontSize: '12px', color: '#666', marginLeft: '10px' }}>
+                ⚡ Demo
+              </span>
+            )}
+          </h2>
           <button 
             className="btn-nuevo"
             onClick={() => {
@@ -273,6 +467,11 @@ const Servicios = () => {
         {mostrarFormulario && (
           <div className="formulario-card">
             <h3>{servicioEditando ? "EDITAR SERVICIO" : "NUEVO SERVICIO"}</h3>
+            {usandoSimulacion && (
+              <p style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
+                🔄 Modo demostración - Los datos se guardan en memoria
+              </p>
+            )}
             
             <div className="form-grid">
               <div className="form-group">
@@ -320,9 +519,7 @@ const Servicios = () => {
                 />
               </div>
 
-              {/* ============================================
-                  CAMPO DE IMAGEN - AGREGADO
-                  ============================================ */}
+              {/* CAMPO DE IMAGEN */}
               <div className="form-group full-width">
                 <label>IMAGEN DEL SERVICIO</label>
                 <input 
@@ -437,9 +634,7 @@ const Servicios = () => {
             <div className="servicios-grid">
               {serviciosFiltrados.map((servicio) => (
                 <div key={servicio.id_servicio} className="servicio-card">
-                  {/* ============================================
-                      MOSTRAR IMAGEN DEL SERVICIO - AGREGADO
-                      ============================================ */}
+                  {/* MOSTRAR IMAGEN DEL SERVICIO */}
                   {servicio.imagen && (
                     <div className="servicio-imagen-container">
                       <img 
@@ -491,6 +686,30 @@ const Servicios = () => {
         <div className="welcome-footer">
           Bienvenido, Administrador
         </div>
+
+        {/* INDICADOR DE MODO */}
+        {usandoSimulacion && (
+          <div style={{
+            marginTop: '20px',
+            padding: '10px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '5px',
+            fontSize: '11px',
+            color: '#666',
+            textAlign: 'center',
+            border: '1px solid #e0e0e0'
+          }}>
+            ⚡ Módulo de servicios en modo <strong>DEMO</strong> - Los datos se guardan en memoria
+            <br />
+            <span style={{ fontSize: '10px', color: '#999' }}>
+              Las imágenes se guardan en Base64 (máximo 2MB)
+            </span>
+            <br />
+            <span style={{ fontSize: '10px', color: '#999' }}>
+              Para conectar con BD, descomenta las partes marcadas con "🟡 PARTE 2"
+            </span>
+          </div>
+        )}
       </main>
     </div>
   );

@@ -1,10 +1,185 @@
-// Ventas.jsx - VERSIÓN CON BACKEND
+// Ventas.jsx - VERSIÓN SIN BD (CON SIMULACIÓN)
 import React, { useState, useEffect } from "react";
 import "./ventas.css";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/ventas';
+// ============================================
+// 📊 DATOS SIMULADOS (PARA PRUEBAS SIN BD)
+// ============================================
+let DATOS_SIMULADOS = {
+  ventas: [
+    { 
+      id_venta: 1, 
+      fecha: '2026-07-30', 
+      id_cliente: 1,
+      cliente: 'Juan Pérez', 
+      productos: [
+        { nombre: 'Cera para Cabello', cantidad: 2, precio: 350 },
+        { nombre: 'Aceite para Barba', cantidad: 1, precio: 280 }
+      ],
+      total: 980.00,
+      estado: 'Completada'
+    },
+    { 
+      id_venta: 2, 
+      fecha: '2026-07-30', 
+      id_cliente: 2,
+      cliente: 'María García', 
+      productos: [
+        { nombre: 'Shampoo Fortalecedor', cantidad: 3, precio: 320 }
+      ],
+      total: 960.00,
+      estado: 'Completada'
+    },
+    { 
+      id_venta: 3, 
+      fecha: '2026-07-29', 
+      id_cliente: 3,
+      cliente: 'Pedro Rodríguez', 
+      productos: [
+        { nombre: 'Tijeras Profesionales', cantidad: 1, precio: 1200 }
+      ],
+      total: 1200.00,
+      estado: 'Completada'
+    },
+    { 
+      id_venta: 4, 
+      fecha: '2026-07-29', 
+      id_cliente: 4,
+      cliente: 'Laura Sánchez', 
+      productos: [
+        { nombre: 'Navaja de Afeitar', cantidad: 2, precio: 450 },
+        { nombre: 'Cera para Cabello', cantidad: 1, precio: 350 }
+      ],
+      total: 1250.00,
+      estado: 'Pendiente'
+    },
+    { 
+      id_venta: 5, 
+      fecha: '2026-07-28', 
+      id_cliente: 5,
+      cliente: 'Diego Ramírez', 
+      productos: [
+        { nombre: 'Aceite para Barba', cantidad: 2, precio: 280 }
+      ],
+      total: 560.00,
+      estado: 'Completada'
+    }
+  ],
+  clientes: [
+    { id_cliente: 1, nombre: 'Juan Pérez' },
+    { id_cliente: 2, nombre: 'María García' },
+    { id_cliente: 3, nombre: 'Pedro Rodríguez' },
+    { id_cliente: 4, nombre: 'Laura Sánchez' },
+    { id_cliente: 5, nombre: 'Diego Ramírez' },
+    { id_cliente: 6, nombre: 'Sofía Torres' },
+  ],
+  productos: [
+    { id_producto: 1, nombre_producto: 'Cera para Cabello', precio: 350, stock: 15 },
+    { id_producto: 2, nombre_producto: 'Tijeras Profesionales', precio: 1200, stock: 8 },
+    { id_producto: 3, nombre_producto: 'Aceite para Barba', precio: 280, stock: 20 },
+    { id_producto: 4, nombre_producto: 'Navaja de Afeitar', precio: 450, stock: 5 },
+    { id_producto: 5, nombre_producto: 'Shampoo Fortalecedor', precio: 320, stock: 10 }
+  ]
+};
+
+let contadorId = 6; // Para generar IDs automáticos
+
+// ============================================
+// 🟢 FUNCIONES SIMULADAS (SIN BD)
+// ============================================
+
+const cargarVentasSimuladas = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        data: {
+          success: true,
+          data: DATOS_SIMULADOS.ventas
+        }
+      });
+    }, 500);
+  });
+};
+
+const cargarSelectoresSimulados = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        clientes: { data: { success: true, data: DATOS_SIMULADOS.clientes } },
+        productos: { data: { success: true, data: DATOS_SIMULADOS.productos } }
+      });
+    }, 300);
+  });
+};
+
+const guardarVentaSimulada = (venta) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // Validar stock
+      for (const item of venta.productos) {
+        const producto = DATOS_SIMULADOS.productos.find(p => p.nombre_producto === item.nombre);
+        if (producto && producto.stock < item.cantidad) {
+          reject({ 
+            response: { 
+              data: { 
+                message: `Stock insuficiente para ${item.nombre}. Solo hay ${producto.stock} unidades` 
+              } 
+            } 
+          });
+          return;
+        }
+      }
+
+      // Descontar stock
+      for (const item of venta.productos) {
+        const producto = DATOS_SIMULADOS.productos.find(p => p.nombre_producto === item.nombre);
+        if (producto) {
+          producto.stock -= item.cantidad;
+        }
+      }
+
+      const nuevaVenta = {
+        id_venta: contadorId++,
+        ...venta,
+        cliente: DATOS_SIMULADOS.clientes.find(c => c.id_cliente === venta.id_cliente)?.nombre || 'Cliente'
+      };
+      DATOS_SIMULADOS.ventas.push(nuevaVenta);
+      resolve({ data: { success: true, message: 'Venta registrada' } });
+    }, 500);
+  });
+};
+
+const eliminarVentaSimulada = (id) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = DATOS_SIMULADOS.ventas.findIndex(v => v.id_venta === parseInt(id));
+      if (index !== -1) {
+        DATOS_SIMULADOS.ventas.splice(index, 1);
+        resolve({ data: { success: true, message: 'Venta eliminada' } });
+      } else {
+        reject({ response: { data: { message: 'Venta no encontrada' } } });
+      }
+    }, 500);
+  });
+};
+
+const buscarVentaSimulada = (termino) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const resultados = DATOS_SIMULADOS.ventas.filter(v => 
+        v.cliente.toLowerCase().includes(termino.toLowerCase())
+      );
+      resolve({
+        data: {
+          success: true,
+          data: resultados
+        }
+      });
+    }, 300);
+  });
+};
 
 const Ventas = () => {
   const [ventas, setVentas] = useState([]);
@@ -14,6 +189,7 @@ const Ventas = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [ventaEditando, setVentaEditando] = useState(null);
   const [buscarTexto, setBuscarTexto] = useState("");
+  const [usandoSimulacion, setUsandoSimulacion] = useState(false);
 
   const [nuevaVenta, setNuevaVenta] = useState({
     id_cliente: "",
@@ -36,16 +212,43 @@ const Ventas = () => {
     cargarSelectores();
   }, []);
 
+  // ============================================
+  // 🟡 FUNCIONES PRINCIPALES (CON SOPORTE BD)
+  // ============================================
+
   const cargarVentas = async () => {
     setLoading(true);
     try {
+      // ============================================
+      // 🟢 PARTE 1: DATOS SIMULADOS (SIN BD)
+      // ============================================
+      const response = await cargarVentasSimuladas();
+      if (response.data.success) {
+        setVentas(response.data.data);
+        setUsandoSimulacion(true);
+      }
+      
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // DESCOMENTAR ESTA PARTE CUANDO TENGAS BD
+      // ============================================
+      
+      /*
       const response = await axios.get(API_URL);
       if (response.data.success) {
         setVentas(response.data.data);
+        setUsandoSimulacion(false);
       }
+      */
+      
     } catch (error) {
       console.error('Error cargando ventas:', error);
-      alert('❌ Error al cargar ventas');
+      // Si falla, usar datos simulados como respaldo
+      const response = await cargarVentasSimuladas();
+      if (response.data.success) {
+        setVentas(response.data.data);
+        setUsandoSimulacion(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -53,19 +256,35 @@ const Ventas = () => {
 
   const cargarSelectores = async () => {
     try {
-      // Cargar clientes
+      // ============================================
+      // 🟢 PARTE 1: DATOS SIMULADOS (SIN BD)
+      // ============================================
+      const data = await cargarSelectoresSimulados();
+      setClientes(data.clientes.data.data);
+      setProductos(data.productos.data.data);
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const clientesRes = await axios.get(`${API_URL}/clientes`);
       if (clientesRes.data.success) {
         setClientes(clientesRes.data.data);
       }
 
-      // Cargar productos
       const productosRes = await axios.get(`${API_URL}/productos`);
       if (productosRes.data.success) {
         setProductos(productosRes.data.data);
       }
+      */
+      
     } catch (error) {
       console.error('Error cargando selectores:', error);
+      // Usar datos simulados como respaldo
+      const data = await cargarSelectoresSimulados();
+      setClientes(data.clientes.data.data);
+      setProductos(data.productos.data.data);
     }
   };
 
@@ -158,6 +377,25 @@ const Ventas = () => {
 
       setLoading(true);
 
+      // ============================================
+      // 🟢 PARTE 1: GUARDAR SIMULADO (SIN BD)
+      // ============================================
+      const dataToSend = {
+        id_cliente: parseInt(nuevaVenta.id_cliente),
+        fecha: nuevaVenta.fecha,
+        productos: nuevaVenta.productos,
+        total: nuevaVenta.total,
+        estado: nuevaVenta.estado || "Completada"
+      };
+      
+      const response = await guardarVentaSimulada(dataToSend);
+      alert(response.data.success ? '✅ Venta registrada' : '❌ Error');
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const dataToSend = {
         id_cliente: parseInt(nuevaVenta.id_cliente),
         fecha: nuevaVenta.fecha,
@@ -169,9 +407,11 @@ const Ventas = () => {
       const response = await axios.post(API_URL, dataToSend);
       if (response.data.success) {
         alert('✅ Venta registrada exitosamente');
-        await cargarVentas();
-        handleCancelar();
       }
+      */
+      
+      await cargarVentas();
+      handleCancelar();
     } catch (error) {
       console.error('Error guardando:', error);
       alert(error.response?.data?.message || '❌ Error al guardar');
@@ -185,11 +425,25 @@ const Ventas = () => {
     
     try {
       setLoading(true);
+      
+      // ============================================
+      // 🟢 PARTE 1: ELIMINAR SIMULADO (SIN BD)
+      // ============================================
+      const response = await eliminarVentaSimulada(id);
+      alert(response.data.success ? '✅ Venta eliminada' : '❌ Error');
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const response = await axios.delete(`${API_URL}/${id}`);
       if (response.data.success) {
         alert('✅ Venta eliminada');
-        await cargarVentas();
       }
+      */
+      
+      await cargarVentas();
     } catch (error) {
       console.error('Error eliminando:', error);
       alert('❌ Error al eliminar');
@@ -213,7 +467,20 @@ const Ventas = () => {
     
     try {
       setLoading(true);
+      
+      // ============================================
+      // 🟢 PARTE 1: BUSCAR SIMULADO (SIN BD)
+      // ============================================
+      const response = await buscarVentaSimulada(buscarTexto);
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const response = await axios.get(`${API_URL}/search?termino=${buscarTexto}`);
+      */
+      
       if (response.data.success) {
         if (response.data.data.length > 0) {
           alert(`📋 Ventas encontradas:\n${response.data.data.map(v => `- ${v.cliente}: $${v.total}`).join("\n")}`);
@@ -231,7 +498,7 @@ const Ventas = () => {
 
   const verDetalle = (venta) => {
     const productosStr = venta.productos.map(p => 
-      `- ${p.nombre} x ${p.cantidad} = $${p.cantidad * p.precio}`
+      `- ${p.nombre} x ${p.cantidad} = $${(p.cantidad * p.precio).toFixed(2)}`
     ).join('\n');
     
     alert(
@@ -239,7 +506,7 @@ const Ventas = () => {
       `ID: #${venta.id_venta}\n` +
       `Cliente: ${venta.cliente}\n` +
       `Fecha: ${venta.fecha}\n` +
-      `Total: $${venta.total}\n` +
+      `Total: $${venta.total.toFixed(2)}\n` +
       `Estado: ${venta.estado}\n\n` +
       `PRODUCTOS:\n${productosStr}`
     );
@@ -282,7 +549,14 @@ const Ventas = () => {
       {/* MAIN CONTENT */}
       <main className="main-content">
         <header className="top-header">
-          <h2>VENTAS {loading && <span>⏳</span>}</h2>
+          <h2>
+            VENTAS {loading && <span>⏳</span>}
+            {!loading && usandoSimulacion && (
+              <span style={{ fontSize: '12px', color: '#666', marginLeft: '10px' }}>
+                ⚡ Demo
+              </span>
+            )}
+          </h2>
           <button 
             className="btn-nuevo"
             onClick={() => {
@@ -300,6 +574,11 @@ const Ventas = () => {
         {mostrarFormulario && (
           <div className="formulario-card">
             <h3>NUEVA VENTA</h3>
+            {usandoSimulacion && (
+              <p style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
+                🔄 Modo demostración - Los datos se guardan en memoria y actualizan stock
+              </p>
+            )}
             
             <div className="form-grid">
               <div className="form-group">
@@ -395,7 +674,7 @@ const Ventas = () => {
                       {nuevaVenta.productos.map((producto, index) => (
                         <li key={index}>
                           <span>
-                            {producto.nombre} x {producto.cantidad} = ${producto.cantidad * producto.precio}
+                            {producto.nombre} x {producto.cantidad} = ${(producto.cantidad * producto.precio).toFixed(2)}
                           </span>
                           <button 
                             className="btn-eliminar-producto"
@@ -407,7 +686,7 @@ const Ventas = () => {
                       ))}
                     </ul>
                     <div className="total-productos">
-                      <strong>TOTAL: ${nuevaVenta.total}</strong>
+                      <strong>TOTAL: ${nuevaVenta.total.toFixed(2)}</strong>
                     </div>
                   </div>
                 )}
@@ -483,7 +762,7 @@ const Ventas = () => {
                       <td>{venta.fecha}</td>
                       <td>{venta.cliente || 'Cliente eliminado'}</td>
                       <td>{venta.productos?.length || 0} productos</td>
-                      <td className="precio-total">${venta.total}</td>
+                      <td className="precio-total">${venta.total.toFixed(2)}</td>
                       <td>
                         <span className={`estado-badge ${venta.estado?.toLowerCase() || 'completada'}`}>
                           {venta.estado || 'Completada'}
@@ -514,6 +793,30 @@ const Ventas = () => {
             </table>
           </div>
         </div>
+
+        {/* INDICADOR DE MODO */}
+        {usandoSimulacion && (
+          <div style={{
+            marginTop: '20px',
+            padding: '10px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '5px',
+            fontSize: '11px',
+            color: '#666',
+            textAlign: 'center',
+            border: '1px solid #e0e0e0'
+          }}>
+            ⚡ Módulo de ventas en modo <strong>DEMO</strong> - Los datos se guardan en memoria
+            <br />
+            <span style={{ fontSize: '10px', color: '#999' }}>
+              Las ventas actualizan el stock de productos automáticamente
+            </span>
+            <br />
+            <span style={{ fontSize: '10px', color: '#999' }}>
+              Para conectar con BD, descomenta las partes marcadas con "🟡 PARTE 2"
+            </span>
+          </div>
+        )}
       </main>
     </div>
   );

@@ -4,7 +4,146 @@ import "./empleado.css";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/empleados';
+// ============================================
+// 📊 DATOS SIMULADOS (PARA PRUEBAS SIN BD)
+// ============================================
+let DATOS_SIMULADOS = {
+  empleados: [
+    { 
+      id_empleado: 1, 
+      nombre: 'Carlos López', 
+      telefono: '722 123 4567', 
+      correo: 'carlos@barberia.com', 
+      puesto: 'Administrador', 
+      rol: 'admin', 
+      activo: true,
+      password: 'admin123' 
+    },
+    { 
+      id_empleado: 2, 
+      nombre: 'Ana Martínez', 
+      telefono: '722 234 5678', 
+      correo: 'ana@barberia.com', 
+      puesto: 'Barbero', 
+      rol: 'empleado', 
+      activo: true,
+      password: 'barbero123' 
+    },
+    { 
+      id_empleado: 3, 
+      nombre: 'Roberto Gómez', 
+      telefono: '722 345 6789', 
+      correo: 'roberto@barberia.com', 
+      puesto: 'Barbero', 
+      rol: 'empleado', 
+      activo: false,
+      password: 'barbero456' 
+    },
+    { 
+      id_empleado: 4, 
+      nombre: 'Laura Torres', 
+      telefono: '722 456 7890', 
+      correo: 'laura@barberia.com', 
+      puesto: 'Recepcionista', 
+      rol: 'empleado', 
+      activo: true,
+      password: 'recepcion123' 
+    }
+  ]
+};
+
+let contadorId = 5; // Para generar IDs automáticos
+
+// ============================================
+// 🟢 FUNCIONES SIMULADAS (SIN BD)
+// ============================================
+
+const cargarEmpleadosSimulados = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        data: {
+          success: true,
+          data: DATOS_SIMULADOS.empleados
+        }
+      });
+    }, 500);
+  });
+};
+
+const guardarEmpleadoSimulado = (empleado, editando) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (editando) {
+        // Actualizar
+        const index = DATOS_SIMULADOS.empleados.findIndex(e => e.id_empleado === empleado.id_empleado);
+        if (index !== -1) {
+          // Si no se proporciona nueva contraseña, mantener la anterior
+          if (!empleado.password || empleado.password.trim() === '') {
+            empleado.password = DATOS_SIMULADOS.empleados[index].password;
+          }
+          DATOS_SIMULADOS.empleados[index] = { ...DATOS_SIMULADOS.empleados[index], ...empleado };
+          resolve({ data: { success: true, message: 'Empleado actualizado' } });
+        } else {
+          reject({ response: { data: { message: 'Empleado no encontrado' } } });
+        }
+      } else {
+        // Crear nuevo
+        const nuevo = {
+          id_empleado: contadorId++,
+          ...empleado,
+          activo: true
+        };
+        DATOS_SIMULADOS.empleados.push(nuevo);
+        resolve({ data: { success: true, message: 'Empleado creado' } });
+      }
+    }, 500);
+  });
+};
+
+const eliminarEmpleadoSimulado = (id) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = DATOS_SIMULADOS.empleados.findIndex(e => e.id_empleado === parseInt(id));
+      if (index !== -1) {
+        DATOS_SIMULADOS.empleados.splice(index, 1);
+        resolve({ data: { success: true, message: 'Empleado eliminado' } });
+      } else {
+        reject({ response: { data: { message: 'Empleado no encontrado' } } });
+      }
+    }, 500);
+  });
+};
+
+const buscarEmpleadoSimulado = (termino) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const resultados = DATOS_SIMULADOS.empleados.filter(e => 
+        e.nombre.toLowerCase().includes(termino.toLowerCase())
+      );
+      resolve({
+        data: {
+          success: true,
+          data: resultados
+        }
+      });
+    }, 300);
+  });
+};
+
+const toggleStatusSimulado = (id, activo) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = DATOS_SIMULADOS.empleados.findIndex(e => e.id_empleado === parseInt(id));
+      if (index !== -1) {
+        DATOS_SIMULADOS.empleados[index].activo = activo;
+        resolve({ data: { success: true, message: 'Estado actualizado' } });
+      } else {
+        reject({ response: { data: { message: 'Empleado no encontrado' } } });
+      }
+    }, 400);
+  });
+};
 
 const Empleado = () => {
   const [empleados, setEmpleados] = useState([]);
@@ -13,6 +152,7 @@ const Empleado = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [buscarTexto, setBuscarTexto] = useState("");
   const [mostrarPassword, setMostrarPassword] = useState(false);
+  const [usandoSimulacion, setUsandoSimulacion] = useState(false);
 
   const [nuevoEmpleado, setNuevoEmpleado] = useState({
     nombre: "",
@@ -27,18 +167,45 @@ const Empleado = () => {
     cargarEmpleados();
   }, []);
 
+  // ============================================
+  // 🟡 FUNCIONES PRINCIPALES (CON SOPORTE BD)
+  // ============================================
+
   const cargarEmpleados = async () => {
     setLoading(true);
     try {
+      // ============================================
+      // 🟢 PARTE 1: DATOS SIMULADOS (SIN BD)
+      // ============================================
+      const response = await cargarEmpleadosSimulados();
+      if (response.data.success) {
+        setEmpleados(response.data.data);
+        setUsandoSimulacion(true);
+      }
+      
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // DESCOMENTAR ESTA PARTE CUANDO TENGAS BD
+      // ============================================
+      
+      /*
       const response = await axios.get(API_URL);
       if (response.data.success) {
         setEmpleados(response.data.data);
+        setUsandoSimulacion(false);
       } else {
         alert('❌ ' + response.data.message);
       }
+      */
+      
     } catch (error) {
       console.error('Error cargando empleados:', error);
-      alert('❌ Error al cargar empleados');
+      // Si falla, usar datos simulados como respaldo
+      const response = await cargarEmpleadosSimulados();
+      if (response.data.success) {
+        setEmpleados(response.data.data);
+        setUsandoSimulacion(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -74,20 +241,35 @@ const Empleado = () => {
 
       setLoading(true);
 
+      // ============================================
+      // 🟢 PARTE 1: GUARDAR SIMULADO (SIN BD)
+      // ============================================
+      const empleadoData = {
+        ...nuevoEmpleado,
+        id_empleado: empleadoEditando ? empleadoEditando.id_empleado : null
+      };
+      
+      const response = await guardarEmpleadoSimulado(empleadoData, !!empleadoEditando);
+      alert(response.data.success ? '✅ Empleado guardado' : '❌ Error');
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       let response;
       if (empleadoEditando) {
-        // Actualizar
         response = await axios.put(`${API_URL}/${empleadoEditando.id_empleado}`, nuevoEmpleado);
         if (response.data.success) {
           alert('✅ Empleado actualizado');
         }
       } else {
-        // Crear
         response = await axios.post(API_URL, nuevoEmpleado);
         if (response.data.success) {
           alert('✅ Empleado creado');
         }
       }
+      */
       
       await cargarEmpleados();
       setNuevoEmpleado({ nombre: "", telefono: "", correo: "", puesto: "", password: "", rol: "empleado" });
@@ -106,13 +288,27 @@ const Empleado = () => {
     
     try {
       setLoading(true);
+      
+      // ============================================
+      // 🟢 PARTE 1: ELIMINAR SIMULADO (SIN BD)
+      // ============================================
+      const response = await eliminarEmpleadoSimulado(id);
+      alert(response.data.success ? '✅ Empleado eliminado' : '❌ Error');
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const response = await axios.delete(`${API_URL}/${id}`);
       if (response.data.success) {
         alert('✅ Empleado eliminado');
-        await cargarEmpleados();
-        setMostrarFormulario(false);
-        setEmpleadoEditando(null);
       }
+      */
+      
+      await cargarEmpleados();
+      setMostrarFormulario(false);
+      setEmpleadoEditando(null);
     } catch (error) {
       console.error('Error eliminando:', error);
       alert('❌ Error al eliminar');
@@ -148,7 +344,20 @@ const Empleado = () => {
     
     try {
       setLoading(true);
+      
+      // ============================================
+      // 🟢 PARTE 1: BUSCAR SIMULADO (SIN BD)
+      // ============================================
+      const response = await buscarEmpleadoSimulado(buscarTexto);
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const response = await axios.get(`${API_URL}/search?termino=${buscarTexto}`);
+      */
+      
       if (response.data.success) {
         if (response.data.data.length > 0) {
           alert(`📋 Encontrados:\n${response.data.data.map(e => `- ${e.nombre}`).join("\n")}`);
@@ -173,12 +382,25 @@ const Empleado = () => {
   const handleToggleStatus = async (empleado) => {
     try {
       setLoading(true);
+      
+      // ============================================
+      // 🟢 PARTE 1: TOGGLE STATUS SIMULADO (SIN BD)
+      // ============================================
+      const nuevoEstado = !empleado.activo;
+      const response = await toggleStatusSimulado(empleado.id_empleado, nuevoEstado);
+      alert(response.data.success ? '✅ Estado actualizado' : '❌ Error');
+
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // ============================================
+      
+      /*
       const response = await axios.patch(`${API_URL}/${empleado.id_empleado}/status`, {
         activo: !empleado.activo
       });
-      if (response.data.success) {
-        await cargarEmpleados();
-      }
+      */
+      
+      await cargarEmpleados();
     } catch (error) {
       console.error('Error cambiando estado:', error);
       alert('❌ Error al cambiar estado');
@@ -191,10 +413,9 @@ const Empleado = () => {
     ? empleados.filter(e => e.nombre.toLowerCase().includes(buscarTexto.toLowerCase()))
     : empleados;
 
-  // El JSX se mantiene igual pero usa los nuevos campos
   return (
     <div className="empleados-container">
-      {/* Sidebar - igual */}
+      {/* Sidebar */}
       <aside className="sidebar">
         <div className="brand">
           <h1>SHELBY</h1>
@@ -223,7 +444,14 @@ const Empleado = () => {
       {/* Main Content */}
       <main className="main-content">
         <header className="top-header">
-          <h2>EMPLEADOS {loading && <span>⏳</span>}</h2>
+          <h2>
+            EMPLEADOS {loading && <span>⏳</span>}
+            {!loading && usandoSimulacion && (
+              <span style={{ fontSize: '12px', color: '#666', marginLeft: '10px' }}>
+                ⚡ Demo
+              </span>
+            )}
+          </h2>
           <button 
             className="btn-nuevo"
             onClick={() => {
@@ -242,6 +470,11 @@ const Empleado = () => {
             El campo <strong>Contraseña</strong> permite al empleado iniciar sesión en el sistema. 
             Solo el administrador puede registrar nuevos empleados.
           </p>
+          {usandoSimulacion && (
+            <p style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+              🔄 Modo demostración - Los datos se guardan en memoria
+            </p>
+          )}
         </div>
 
         {/* Formulario */}
@@ -471,6 +704,26 @@ const Empleado = () => {
             </table>
           </div>
         </div>
+
+        {/* INDICADOR DE MODO */}
+        {usandoSimulacion && (
+          <div style={{
+            marginTop: '20px',
+            padding: '10px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '5px',
+            fontSize: '11px',
+            color: '#666',
+            textAlign: 'center',
+            border: '1px solid #e0e0e0'
+          }}>
+            ⚡ Módulo de empleados en modo <strong>DEMO</strong> - Los datos se guardan en memoria
+            <br />
+            <span style={{ fontSize: '10px', color: '#999' }}>
+              Para conectar con BD, descomenta las partes marcadas con "🟡 PARTE 2"
+            </span>
+          </div>
+        )}
       </main>
     </div>
   );
