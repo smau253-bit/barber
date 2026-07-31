@@ -220,7 +220,7 @@ function Catalogo() {
               padding: '4px 8px',
               borderRadius: '4px'
             }}>
-              ⚡ Demo
+       
             </span>
           )}
         </div>
@@ -237,7 +237,7 @@ function Catalogo() {
               {loading ? 'Cargando...' : `${productosFiltrados.length} resultados disponibles`}
               {!loading && usandoSimulacion && (
                 <span style={{ fontSize: '12px', color: '#666', marginLeft: '8px' }}>
-                  (modo demo)
+     
                 </span>
               )}
             </p>
@@ -293,25 +293,7 @@ function Catalogo() {
           </section>
         )}
 
-        {/* Indicador de modo demo */}
-        {!loading && usandoSimulacion && productos.length > 0 && (
-          <div style={{
-            marginTop: '30px',
-            padding: '10px',
-            backgroundColor: '#f5f5f5',
-            borderRadius: '5px',
-            fontSize: '11px',
-            color: '#666',
-            textAlign: 'center',
-            border: '1px solid #e0e0e0'
-          }}>
-            ⚡ Catálogo en modo <strong>DEMO</strong> - Los datos son de prueba
-            <br />
-            <span style={{ fontSize: '10px', color: '#999' }}>
-              Para conectar con BD, descomenta la Parte 2 en cargarProductos()
-            </span>
-          </div>
-        )}
+
       </main>
 
       {productoSeleccionado && (
