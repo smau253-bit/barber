@@ -285,25 +285,7 @@ function Servicio() {
           </section>
         )}
 
-        {/* Indicador de modo demo */}
-        {!loading && usandoSimulacion && servicios.length > 0 && (
-          <div style={{
-            marginTop: '30px',
-            padding: '10px',
-            backgroundColor: '#f5f5f5',
-            borderRadius: '5px',
-            fontSize: '11px',
-            color: '#666',
-            textAlign: 'center',
-            border: '1px solid #e0e0e0'
-          }}>
-            ⚡ Catálogo en modo <strong>DEMO</strong> - Los datos son de prueba
-            <br />
-            <span style={{ fontSize: '10px', color: '#999' }}>
-              Para conectar con BD, descomenta la Parte 2 en cargarServicios()
-            </span>
-          </div>
-        )}
+
       </main>
 
       {/* MODAL REAL - Se muestra cuando hay un servicio seleccionado */}

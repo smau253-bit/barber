@@ -285,23 +285,7 @@ const Detallese = ({ servicio, cerrar }) => {
             AGENDAR CITA
           </button>
 
-          {/* Mensaje informativo en modo demo */}
-          {usandoSimulacion && (
-            <p style={{ 
-              fontSize: '11px', 
-              color: '#999', 
-              textAlign: 'center', 
-              marginTop: '10px',
-              borderTop: '1px solid #eee',
-              paddingTop: '10px'
-            }}>
-              ⚡ Servicio en modo demostración
-              <br />
-              <span style={{ fontSize: '9px' }}>
-                Para conectar con BD, descomenta la Parte 2
-              </span>
-            </p>
-          )}
+
         </div>
       </div>
     </div>

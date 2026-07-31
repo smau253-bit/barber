@@ -247,25 +247,7 @@ const Dashboard = () => {
           </Link>
         </div>
 
-        {/* INDICADOR DE MODO */}
-        {usandoSimulacion && (
-          <div style={{
-            marginTop: '20px',
-            padding: '10px',
-            backgroundColor: '#f5f5f5',
-            borderRadius: '5px',
-            fontSize: '11px',
-            color: '#666',
-            textAlign: 'center',
-            border: '1px solid #e0e0e0'
-          }}>
-            ⚡ Dashboard en modo <strong>DEMO</strong> - Los datos son de prueba
-            <br />
-            <span style={{ fontSize: '10px', color: '#999' }}>
-              Para conectar con BD, descomenta la Parte 2 en cargarDashboard()
-            </span>
-          </div>
-        )}
+
       </main>
     </div>
   );

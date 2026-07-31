@@ -681,25 +681,7 @@ const Citas = () => {
           </div>
         </div>
 
-        {/* INDICADOR DE MODO */}
-        {usandoSimulacion && (
-          <div style={{
-            marginTop: '20px',
-            padding: '10px',
-            backgroundColor: '#f5f5f5',
-            borderRadius: '5px',
-            fontSize: '11px',
-            color: '#666',
-            textAlign: 'center',
-            border: '1px solid #e0e0e0'
-          }}>
-            ⚡ Módulo de citas en modo <strong>DEMO</strong> - Los datos se guardan en memoria
-            <br />
-            <span style={{ fontSize: '10px', color: '#999' }}>
-              Para conectar con BD, descomenta las partes marcadas con "🟡 PARTE 2"
-            </span>
-          </div>
-        )}
+
       </main>
     </div>
   );

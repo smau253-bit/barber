@@ -166,25 +166,7 @@ function Sesion() {
           </button>
         </form>
 
-        <div className="demo">
-          <strong>Demo:</strong> admin@elitecut.com / admin123
-        </div>
 
-        {/* 📝 INDICADOR DE MODO */}
-        <div style={{ 
-          marginTop: "10px", 
-          fontSize: "12px", 
-          color: "#666",
-          textAlign: "center",
-          borderTop: "1px solid #eee",
-          paddingTop: "10px"
-        }}>
-          ⚡ Modo: <strong>Sin BD</strong> (Simulación local)
-          <br />
-          <span style={{ fontSize: "10px", color: "#999" }}>
-            Usuarios: admin@elitecut.com | usuario@demo.com
-          </span>
-        </div>
       </div>
     </div>
   );
