@@ -5,9 +5,86 @@ import { useState, useEffect } from "react";
 import axios from 'axios';
 import Detalleca from "../detalle_catalogo/detalleca";
 
-// 🔥 SOLO CAMBIA ESTA LÍNEA (línea 7)
-// Reemplaza la URL fija con esta configuración dinámica:
-const API_URL = 'http://localhost:5000/api/productos';
+// ============================================
+// 📊 DATOS SIMULADOS (PARA PRUEBAS SIN BD)
+// ============================================
+const IMAGEN_POR_DEFECTO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='14' fill='%23999' text-anchor='middle' dy='.3em'%3EProducto%3C/text%3E%3C/svg%3E";
+
+const DATOS_SIMULADOS = [
+  { 
+    id_producto: 1, 
+    nombre_producto: 'Cera para Cabello Profesional', 
+    descripcion: 'Cera de alta fijación para estilos duraderos. Ideal para cabello corto y medio.', 
+    precio: 350.00,
+    stock: 15,
+    imagen: IMAGEN_POR_DEFECTO
+  },
+  { 
+    id_producto: 2, 
+    nombre_producto: 'Tijeras Profesionales', 
+    descripcion: 'Tijeras de acero inoxidable japonés. Corte preciso y duradero.', 
+    precio: 1200.00,
+    stock: 8,
+    imagen: IMAGEN_POR_DEFECTO
+  },
+  { 
+    id_producto: 3, 
+    nombre_producto: 'Aceite para Barba', 
+    descripcion: 'Aceite natural con ingredientes orgánicos. Hidrata y suaviza la barba.', 
+    precio: 280.00,
+    stock: 20,
+    imagen: IMAGEN_POR_DEFECTO
+  },
+  { 
+    id_producto: 4, 
+    nombre_producto: 'Navaja de Afeitar Clásica', 
+    descripcion: 'Navaja de acero carbono con mango de madera. Perfecta para afeitado tradicional.', 
+    precio: 450.00,
+    stock: 5,
+    imagen: IMAGEN_POR_DEFECTO
+  },
+  { 
+    id_producto: 5, 
+    nombre_producto: 'Shampoo Fortalecedor', 
+    descripcion: 'Shampoo con biotina y queratina. Fortalece y previene la caída del cabello.', 
+    precio: 320.00,
+    stock: 10,
+    imagen: IMAGEN_POR_DEFECTO
+  },
+  { 
+    id_producto: 6, 
+    nombre_producto: 'Bálsamo Acondicionador', 
+    descripcion: 'Acondicionador con keratina y aceites esenciales. Repara el cabello dañado.', 
+    precio: 290.00,
+    stock: 12,
+    imagen: IMAGEN_POR_DEFECTO
+  },
+  { 
+    id_producto: 7, 
+    nombre_producto: 'Gel Fijador Extremo', 
+    descripcion: 'Gel de fijación extrema con acabado brillante. Ideal para estilos definidos.', 
+    precio: 180.00,
+    stock: 25,
+    imagen: IMAGEN_POR_DEFECTO
+  }
+];
+
+// ============================================
+// 🟢 FUNCIÓN SIMULADA (SIN BD)
+// ============================================
+
+const cargarProductosSimulados = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        data: {
+          success: true,
+          data: DATOS_SIMULADOS
+        }
+      });
+    }, 600); // Simular delay de red
+  });
+};
 
 function Catalogo() {
   const navigate = useNavigate();
@@ -16,25 +93,60 @@ function Catalogo() {
   const [loading, setLoading] = useState(true);
   const [buscarTexto, setBuscarTexto] = useState("");
   const [error, setError] = useState(null);
+  const [usandoSimulacion, setUsandoSimulacion] = useState(false);
 
   useEffect(() => {
     cargarProductos();
   }, []);
 
+  // ============================================
+  // 🟡 FUNCIÓN PRINCIPAL (CON SOPORTE BD)
+  // ============================================
+
   const cargarProductos = async () => {
     setLoading(true);
     setError(null);
     try {
-      console.log('📡 Conectando a:', API_URL); // Para debug
+      // ============================================
+      // 🟢 PARTE 1: DATOS SIMULADOS (SIN BD)
+      // ============================================
+      const response = await cargarProductosSimulados();
+      if (response.data.success) {
+        setProductos(response.data.data);
+        setUsandoSimulacion(true);
+        console.log('✅ Productos cargados desde simulación (sin BD)');
+      }
+      
+      // ============================================
+      // 🟡 PARTE 2: CÓDIGO ORIGINAL CON BD (COMENTADO)
+      // DESCOMENTAR ESTA PARTE CUANDO TENGAS BD
+      // ============================================
+      
+      /*
+      console.log('📡 Conectando a:', API_URL);
       const response = await axios.get(API_URL);
       if (response.data.success) {
         setProductos(response.data.data);
+        setUsandoSimulacion(false);
       } else {
         setError('Error al cargar productos');
       }
+      */
+      
     } catch (error) {
       console.error('Error cargando productos:', error);
-      setError('Error al conectar con el servidor');
+      
+      // Si falla, usar datos simulados como respaldo
+      try {
+        const response = await cargarProductosSimulados();
+        if (response.data.success) {
+          setProductos(response.data.data);
+          setUsandoSimulacion(true);
+          console.log('✅ Productos cargados desde simulación (respaldo)');
+        }
+      } catch (fallbackError) {
+        setError('Error al conectar con el servidor');
+      }
     } finally {
       setLoading(false);
     }
@@ -98,7 +210,19 @@ function Catalogo() {
             value={buscarTexto}
             onChange={handleBuscar}
           />
-
+          {/* Indicador de modo simulación */}
+          {!loading && usandoSimulacion && (
+            <span style={{ 
+              fontSize: '11px', 
+              color: '#666', 
+              marginLeft: '10px',
+              backgroundColor: '#f0f0f0',
+              padding: '4px 8px',
+              borderRadius: '4px'
+            }}>
+              ⚡ Demo
+            </span>
+          )}
         </div>
       </header>
 
@@ -111,12 +235,17 @@ function Catalogo() {
             <h1>CATÁLOGO DE PRODUCTOS</h1>
             <p className="productos-total">
               {loading ? 'Cargando...' : `${productosFiltrados.length} resultados disponibles`}
+              {!loading && usandoSimulacion && (
+                <span style={{ fontSize: '12px', color: '#666', marginLeft: '8px' }}>
+                  (modo demo)
+                </span>
+              )}
             </p>
           </div>
         </div>
 
         <div className="productos-separador">
-          <span>PERFUMES Y COLONIAS</span>
+          <span>PRODUCTOS DE BARBERÍA</span>
         </div>
 
         {loading ? (
@@ -162,6 +291,26 @@ function Catalogo() {
               </div>
             ))}
           </section>
+        )}
+
+        {/* Indicador de modo demo */}
+        {!loading && usandoSimulacion && productos.length > 0 && (
+          <div style={{
+            marginTop: '30px',
+            padding: '10px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '5px',
+            fontSize: '11px',
+            color: '#666',
+            textAlign: 'center',
+            border: '1px solid #e0e0e0'
+          }}>
+            ⚡ Catálogo en modo <strong>DEMO</strong> - Los datos son de prueba
+            <br />
+            <span style={{ fontSize: '10px', color: '#999' }}>
+              Para conectar con BD, descomenta la Parte 2 en cargarProductos()
+            </span>
+          </div>
         )}
       </main>
 
