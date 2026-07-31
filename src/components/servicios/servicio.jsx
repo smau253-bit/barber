@@ -212,7 +212,7 @@ function Servicio() {
               padding: '4px 8px',
               borderRadius: '4px'
             }}>
-              ⚡ Demo
+
             </span>
           )}
         </div>
@@ -229,7 +229,7 @@ function Servicio() {
               {loading ? 'Cargando...' : `${serviciosFiltrados.length} resultados disponibles`}
               {!loading && usandoSimulacion && (
                 <span style={{ fontSize: '12px', color: '#666', marginLeft: '8px' }}>
-                  (modo demo)
+       
                 </span>
               )}
             </p>

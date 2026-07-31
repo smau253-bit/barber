@@ -553,7 +553,7 @@ const Ventas = () => {
             VENTAS {loading && <span>⏳</span>}
             {!loading && usandoSimulacion && (
               <span style={{ fontSize: '12px', color: '#666', marginLeft: '10px' }}>
-                ⚡ Demo
+           
               </span>
             )}
           </h2>
@@ -576,7 +576,7 @@ const Ventas = () => {
             <h3>NUEVA VENTA</h3>
             {usandoSimulacion && (
               <p style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
-                🔄 Modo demostración - Los datos se guardan en memoria y actualizan stock
+            
               </p>
             )}
             
